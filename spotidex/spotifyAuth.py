@@ -2,6 +2,12 @@ from spotipy import Spotify
 from spotipy.oauth2 import SpotifyPKCE, SpotifyOauthError, SpotifyException
 import os
 import json
+from typing import Callable
+
+class SpotifyTrack:
+    
+    def __init__(self, raw_track_data: str):
+        pass
 
 
 class SpotifyAuth:
@@ -26,11 +32,10 @@ class SpotifyAuth:
 
     def __init__pkce(self) -> SpotifyPKCE:
         scope = "user-read-currently-playing"
-        client_id = os.getenv("SPOTIDEX_CLIENT_ID")
         redirect_uri = "http://localhost:8080/"
         
         return SpotifyPKCE(
-            client_id=client_id, redirect_uri=redirect_uri, scope=scope,cache_path=SpotifyAuth.__cache_path )
+            redirect_uri=redirect_uri, scope=scope,cache_path=SpotifyAuth.__cache_path )
 
 
     def __init_current_user(self) -> str:
@@ -40,19 +45,20 @@ class SpotifyAuth:
                 cache_data = json.load(cache_file)
                 if "logged_in_user" in cache_data:
                     return cache_data["logged_in_user"]
+        
+        return None
 
 
     @property
     def current_user(self) -> str:
         return self.__current_user
 
+
     @property
-    def endpoint(self) -> Spotify:
-        if not self.__endpoint:
-            self.__logged_in = self.establish_connection()
-        
-        self.__logged_in = True
-        return self.__endpoint
+    def currently_playing(self) -> Callable[[], SpotifyTrack]:
+        if not self.__endpoint and not self.establish_connection():
+            raise ValueError("Unable to establish current user, can't provide callback.")
+
 
 
     def establish_connection(self):
@@ -68,13 +74,14 @@ class SpotifyAuth:
                 # user fails or cancels login
                 print("User authorization failed.")
                 self.__endpoint = None
-                return None
+                return False
             except:
                 print("Spotify auth token cache was invalid")
                 os.remove(self.__pkce.cache_path)
-    
 
-    def update_user_in_cache(self, current_user: str):
+        return True
+
+    def __update_user_in_cache(self, current_user: str):
 
         cache_path = self.__pkce.cache_path
 

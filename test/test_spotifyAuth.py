@@ -21,4 +21,3 @@ class test_example(unittest.TestCase):
         auth = SpotifyAuth.get_instance()
         # TODO write remainder        
 
-
