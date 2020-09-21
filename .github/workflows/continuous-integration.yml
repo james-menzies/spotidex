@@ -24,7 +24,7 @@ jobs:
           
       - name: Run Tests
         env: 
-          SPOTIDEX_CLIENT_ID: ${{ secrets.SPOTIDEX_CLIENT_ID }}
+          SPOTIPY_CLIENT_ID: ${{ secrets.SPOTIDEX_CLIENT_ID }}
         run: |
           python -m unittest discover test/
           
