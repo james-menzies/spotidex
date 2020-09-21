@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  "Testing Suite": 
+  "testing-suite": 
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Branch
