@@ -13,7 +13,7 @@ class SpotifyTrack:
 class SpotifyAuth:
 
     __instance = None
-    __cache_path = "test/resources/valid_cache"
+    __cache_path = ".cache"
 
     @staticmethod
     def get_instance():
@@ -26,8 +26,9 @@ class SpotifyAuth:
             raise ValueError("There can only be one instance of SpotifyAuth")
         
         self.__pkce = self.__init__pkce()
-        self.__endpoint = None
+        self.__endpoint = Spotify(auth_manager=self.__pkce)
         self.__current_user = self.__init_current_user()
+        self.__connected = False
         
 
     def __init__pkce(self) -> SpotifyPKCE:
@@ -56,19 +57,18 @@ class SpotifyAuth:
 
     @property
     def currently_playing(self) -> Callable[[], SpotifyTrack]:
-        if not self.__endpoint and not self.establish_connection():
+        if not self.__connected and not self.establish_connection():
             raise ValueError("Unable to establish current user, can't provide callback.")
 
 
 
     def establish_connection(self):
-        self.__endpoint = Spotify(auth_manager=self.__pkce)
-        validated = False
-        while not validated:
+
+        while not self.__connected:
             try:
                 self.__current_user = self.__endpoint.current_user()["display_name"]
-                validated = True
-                self.update_user_in_cache(self.__current_user)
+                self.__connected = True
+                self.__update_user_in_cache(self.__current_user)
               
             except (SpotifyOauthError, KeyboardInterrupt):
                 # user fails or cancels login
@@ -80,6 +80,7 @@ class SpotifyAuth:
                 os.remove(self.__pkce.cache_path)
 
         return True
+        
 
     def __update_user_in_cache(self, current_user: str):
 

@@ -1,5 +1,6 @@
 import unittest
 from spotidex.spotifyAuth import SpotifyAuth
+from shutil import copyfile
 
 class test_example(unittest.TestCase):
 
@@ -17,7 +18,10 @@ class test_example(unittest.TestCase):
         self.assertIsNone(auth.current_user, "no cache should mean that there is no current user")
 
     def test_invalid_cache_fails(self):
-        SpotifyAuth._SpotifyAuth__cache_path = "test/resources/invalid_cache"
+        cache_path = "test/resources/invalid_cache"
+        cache_backup_path = "test/resources/_invalid_cache"
+        copyfile(cache_path, cache_backup_path)
+        SpotifyAuth._SpotifyAuth__cache_path = cache_path
         auth = SpotifyAuth.get_instance()
-        # TODO write remainder        
+
 
