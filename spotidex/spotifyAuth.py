@@ -1,6 +1,6 @@
 from spotipy import Spotify
 from spotipy.oauth2 import SpotifyPKCE, SpotifyOauthError
-from client_id import id
+import os
 
 
 class SpotifyAuth:
@@ -16,15 +16,11 @@ class SpotifyAuth:
     def __init__(self):
         if SpotifyAuth.__instance:
             raise ValueError("There can only be one instance of SpotifyAuth")
-
-        self.__pkce = self.__init__pkce()
-        self.__logged_in = False
-        self.__endpoint = None
         self.__current_user = None
 
     def __init__pkce(self) -> SpotifyPKCE:
         scope = "user-read-currently-playing"
-        client_id = id
+        client_id = os.getenv("SPOTIDEX_CLIENT_ID")
         redirect_uri = "http://localhost:8080/"
         
         return SpotifyPKCE(
@@ -52,5 +48,3 @@ class SpotifyAuth:
         
         self.__logged_in = True
         return self.__endpoint
-    
-    
