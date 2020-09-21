@@ -10,7 +10,7 @@ class SpotifyAuth:
     __cache_path = "test/resources/valid_cache"
 
     @staticmethod
-    def getInstance():
+    def get_instance():
         if SpotifyAuth.__instance == None:
             SpotifyAuth.__instance = SpotifyAuth()
         return SpotifyAuth.__instance
