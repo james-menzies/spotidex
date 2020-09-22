@@ -49,8 +49,10 @@ class test_example(unittest.TestCase):
 
 
     def test_simulate_correct_login(self):
+        cache_path = "test/resources/simulated_cache"
+        SpotifyAuth._SpotifyAuth__cache_path = cache_path
 
-        with open("test/resources/simulated_cache", "w+") as cache_file:
+        with open(cache_path, "w+") as cache_file:
             cache_file.write("{}")
 
         auth = SpotifyAuth.get_instance()
