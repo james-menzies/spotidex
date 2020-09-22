@@ -37,6 +37,10 @@ class FailingEndpoint:
 
 class test_example(unittest.TestCase):
 
+    cache_backup_path = "test/resources/_invalid_cache"
+    cache_path = "test/resources/invalid_cache"
+
+
     def setUp(self):
         SpotifyAuth._SpotifyAuth__instance = None
         SpotifyAuth._SpotifyAuth__cache_path = ""
@@ -58,20 +62,23 @@ class test_example(unittest.TestCase):
         auth = SpotifyAuth.get_instance()
         self.assertIsNone(auth.current_user, "no cache should mean that there is no current user")
         auth._SpotifyAuth__endpoint = PassingEndpoint()
-        self.assertEqual(True, auth.establish_connection(), "Connection should be established with mock endpoint")
-        self.assertEqual("sample_user", auth.current_user, "User should match one provided by mock endpoint ")
+        self.assertTrue(auth.establish_connection(), "Connection should be established with mock endpoint")
+        self.assertEqual("sample_user", auth.current_user, "User should match with one provided by mock endpoint ")
 
         os.remove("test/resources/simulated_cache")
 
 
     def test_invalid_cache_fails(self):
-        cache_path = "test/resources/invalid_cache"
-        cache_backup_path = "test/resources/_invalid_cache"
-        copyfile(cache_path, cache_backup_path)
+        copyfile(self.cache_path, self.cache_backup_path)
 
-        SpotifyAuth._SpotifyAuth__cache_path = cache_path
+        SpotifyAuth._SpotifyAuth__cache_path = self.cache_path
         auth = SpotifyAuth.get_instance()
         auth._SpotifyAuth__endpoint = FailingEndpoint(auth._SpotifyAuth__endpoint)
         self.assertFalse(auth.establish_connection(), "user should not be connected")
         self.assertFalse(os.path.exists("test/resources/invalid_cache"), "invalid cache should be removed.")
-        os.rename(cache_backup_path, cache_path)
+    
+    def tearDown(self):
+        
+        if os.path.exists(self.cache_backup_path):
+            os.rename(self.cache_backup_path, self.cache_path)
+
