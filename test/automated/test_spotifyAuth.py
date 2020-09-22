@@ -1,6 +1,6 @@
 import unittest
 import os
-from spotidex.spotifyAuth import SpotifyAuth #pylint: disable=import-error
+from spotidex.models.spotifyAuth import SpotifyAuth 
 from shutil import copyfile
 from spotipy import Spotify
 
@@ -39,21 +39,20 @@ class test_example(unittest.TestCase):
 
     cache_backup_path = "test/resources/_invalid_cache"
     cache_path = "test/resources/invalid_cache"
+    simulated_cache_path = "test/resources/simulated_cache"
 
 
     def setUp(self):
         SpotifyAuth._SpotifyAuth__instance = None
         SpotifyAuth._SpotifyAuth__cache_path = ""
-        
 
     def test_user_exists_valid_cache(self):
         SpotifyAuth._SpotifyAuth__cache_path = "test/resources/valid_cache"
         auth = SpotifyAuth.get_instance()        
         self.assertEqual("redbrickhut", auth.current_user, "user redbrickhut should be logged in")
 
-
     def test_simulate_correct_login(self):
-        cache_path = "test/resources/simulated_cache"
+        cache_path = self.simulated_cache_path
         SpotifyAuth._SpotifyAuth__cache_path = cache_path
 
         with open(cache_path, "w+") as cache_file:
@@ -64,9 +63,6 @@ class test_example(unittest.TestCase):
         auth._SpotifyAuth__endpoint = PassingEndpoint()
         self.assertTrue(auth.establish_connection(), "Connection should be established with mock endpoint")
         self.assertEqual("sample_user", auth.current_user, "User should match with one provided by mock endpoint ")
-
-        os.remove("test/resources/simulated_cache")
-
 
     def test_invalid_cache_fails(self):
         copyfile(self.cache_path, self.cache_backup_path)
@@ -81,4 +77,7 @@ class test_example(unittest.TestCase):
         
         if os.path.exists(self.cache_backup_path):
             os.rename(self.cache_backup_path, self.cache_path)
+
+        if os.path.exists(self.simulated_cache_path):
+            os.remove(self.simulated_cache_path)
 

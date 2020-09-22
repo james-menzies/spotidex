@@ -3,7 +3,7 @@ from spotipy.oauth2 import SpotifyPKCE, SpotifyOauthError, SpotifyException
 import os
 import json
 from typing import Callable
-from spotidex.spotifyTrack import SpotifyTrack
+from .spotifyTrack import SpotifyTrack
 
 
 class SpotifyAuth:

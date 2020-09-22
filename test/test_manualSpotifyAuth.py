@@ -1,6 +1,6 @@
 import unittest
 import os
-from spotidex.spotifyAuth import SpotifyAuth #pylint: disable=import-error
+from spotidex.models.spotifyAuth import SpotifyAuth 
 
 
 class ManualAuthorization(unittest.TestCase):
@@ -30,4 +30,3 @@ class ManualAuthorization(unittest.TestCase):
     def tearDown(self):
         if os.path.exists(self.cache_path):
             os.remove(self.cache_path)
-
