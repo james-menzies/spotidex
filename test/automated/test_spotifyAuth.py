@@ -1,5 +1,5 @@
 import unittest
-from spotidex.spotifyAuth import SpotifyAuth
+from spotidex.spotifyAuth import SpotifyAuth #pylint: disable=import-error
 from shutil import copyfile
 
 class test_example(unittest.TestCase):
@@ -23,5 +23,7 @@ class test_example(unittest.TestCase):
         copyfile(cache_path, cache_backup_path)
         SpotifyAuth._SpotifyAuth__cache_path = cache_path
         auth = SpotifyAuth.get_instance()
+        auth.establish_connection()
+        
 
 
