@@ -26,6 +26,6 @@ jobs:
         env: 
           SPOTIPY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
         run: |
-          python -m unittest discover test/
+          python -m unittest discover test/automated
           
         
