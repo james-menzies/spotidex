@@ -18,9 +18,8 @@ class ManualAuthorization(unittest.TestCase):
         if connected:
             self.assertTrue(auth.current_user, "Current user should be available on successful connection.")
             self.assertTrue(self.user_still_logged_in(), "User should still be logged in on subsequent program launch.")
-            
         else:
-            self.assertFalse(auth.current_user, "Current user should equal None when connection unsuccessful.")
+            self.assertTrue(auth.current_user, "Current user should equal None when connection unsuccessful.")
         
     def user_still_logged_in(self):
         self.setUp()
