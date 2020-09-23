@@ -15,7 +15,7 @@ uses to gain information about creatures he spots in the wild.
 
 Hence... Spotidex. 
 
-## Installation
+## How To Install This Program
 
 (Coming Soon)
 
@@ -37,13 +37,13 @@ well written my views and view-models are.
 break my program and it needs to be able to resist those attempts.
 
 In addition, I've taken some time to consider what I wrote in the [previous 
-terminal assessment](https://github.com/redbrickhut/StringSectionRosteringUtility)
-, and in doing so have come up with some extra benchmarks for myself in order
+terminal assessment](https://github.com/redbrickhut/StringSectionRosteringUtility), 
+and in doing so have come up with some extra benchmarks for myself in order
 to demonstrate that I am improving as a developer:
 
 * **Testing**: This project contains rigorous and specific automated tests that 
 provide widespread coverage throughout the code base. Given I'm using a lot of
-3rd party APIs and modules, there's a need to come up with some considered
+3rd party APIs and modules, there's a need to utilize some considered
 strategies in order to accurately expose the code I have written.
 * **Project Structure**: This project has a directory structure that attempts
 to reflect a real-world distribution as much as possible. It uses the outline
@@ -59,3 +59,10 @@ automated CI/CD process which as a minimum will be used to ensure the code
 pushed to the master branch passes all the required tests. If there is time,
 this pipeline will be extended by either deploying the application on Pypi, 
 or by creating executable binaries for the major platforms.
+
+## Development Process
+
+For this initial version, I am using this 
+[Github project board](https://github.com/redbrickhut/spotidex/projects/1) to 
+manage my actionable tasks. Any issues or pull requests that are made will 
+automatically feed into this board. 
