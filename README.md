@@ -28,7 +28,8 @@ four main criteria that are equally weighted:
 
 1. How well I describe what the app is trying to achieve, how to interact with
 it, and how the program achieves it on a high level. In other words, how
-thorough this **README** file is.
+thorough this **README** file is. The specific criteria is addressed in under 
+the [Development Overview](#)
 2. How well I utilize OOP to create the structures needed to deliver the 
 solutions for my program, i.e. how well written my model classes are.
 3.  How well I utilize OOP to handle input and output of my program, i.e. how 
@@ -66,3 +67,12 @@ For this initial version, I am using this
 [Github project board](https://github.com/redbrickhut/spotidex/projects/1) to 
 manage my actionable tasks. Any issues or pull requests that are made will 
 automatically feed into this board. 
+
+## In-Depth Logs
+
+These are some more detailed discussions about specific parts of the 
+development process. They are all contained in the /docs folder of the repo.
+
+* [Coding the Spotify Endpoint](#spotidex) (Link not yet functional, for 
+templating purposes only)
+
