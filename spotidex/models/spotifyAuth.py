@@ -64,7 +64,7 @@ class SpotifyAuth:
         else:
             return lambda: self.__endpoint.currently_playing()
     
-    def establish_connection(self) -> bool:
+    def establish_connection(self, suppress_output=True) -> bool:
         """
         Establishes a connection by calling a function on the spotify endpoint.
         It then runs through all the necessary subroutines to ensure the correct
@@ -78,8 +78,6 @@ class SpotifyAuth:
                 self.__connected = True
             except (SpotifyOauthError, KeyboardInterrupt):
                 # user cancels login, abort connection
-                print("User has cancelled Spotify authorization.")
-                self.__endpoint = None
                 return False
             except:
                 # Likely some error involving the cached token.
