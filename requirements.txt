@@ -11,3 +11,5 @@ spotipy==2.16.0
 toml==0.10.1
 urllib3==1.25.10
 wrapt==1.12.1
+
+urwid~=2.1.1
