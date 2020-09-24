@@ -19,6 +19,24 @@ Hence... Spotidex.
 
 (Coming Soon)
 
+## How To Use This Program
+
+### Main Menu
+
+In order to begin a session on Spotidex, you need to allow the program to 
+authorize the program to view certain information from your Spotify account:
+
+* Your basic profile information
+* Your currently playing information
+
+
+
+
+### Session Screen
+
+### Settings
+
+
 ## Benchmarks and Criteria
 
 This project is being assessed as part of my assessment for the 2020 Coder 
@@ -29,7 +47,7 @@ four main criteria that are equally weighted:
 1. How well I describe what the app is trying to achieve, how to interact with
 it, and how the program achieves it on a high level. In other words, how
 thorough this **README** file is. The specific criteria is addressed in under 
-the [Development Overview](#)
+the [Development Overview](#development-overview)
 2. How well I utilize OOP to create the structures needed to deliver the 
 solutions for my program, i.e. how well written my model classes are.
 3.  How well I utilize OOP to handle input and output of my program, i.e. how 
@@ -60,6 +78,9 @@ automated CI/CD process which as a minimum will be used to ensure the code
 pushed to the master branch passes all the required tests. If there is time,
 this pipeline will be extended by either deploying the application on Pypi, 
 or by creating executable binaries for the major platforms.
+
+## Development Overview
+
 
 ## Development Process
 
