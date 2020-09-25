@@ -9,14 +9,20 @@ class View(Protocol):
 
 
 class TerminalWrapper:
+    __palette = {
+        ('bg', 'dark green', 'black', ),
+        ('reversed', 'black', 'white', ),
+    }
     __placeholder = urwid.SolidFill()
     __title = urwid.Text("Spotidex v1.0", align='left')
     __frame = urwid.Frame(__placeholder, header=__title)
-    __loop = urwid.MainLoop(__frame)
+
+    __loop = urwid.MainLoop(__frame, palette=__palette )
     
     @classmethod
-    def start_application(cls, logged_in: bool = False) -> None:
-        cls.__loop.widget = LoginScreen().get_widget()
+    def start_application(cls, initial_screen: View) -> None:
+        cls.__loop.widget = urwid.AttrMap(initial_screen.get_widget(), 'bg')
+        
         cls.__loop.run()
     
     @classmethod
