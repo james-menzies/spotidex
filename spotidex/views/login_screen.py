@@ -1,21 +1,23 @@
 import urwid
 from spotidex.viewmodels.login_screen_vm import LoginScreenVM
-from .components import Menu
+from .components import Menu, Choice
 from .main_menu import MainMenu
+from .terminal_wrapper import TerminalWrapper
+from threading import Thread
 
 
 class LoginScreen:
     
     def __init__(self):
-        self.__login_menu = self.__init_login_menu()
+        self.__widget = self.__init_widget()
         
-        self.viewModel = LoginScreenVM()
+        self.__vm = LoginScreenVM()
     
-    def __init_login_menu(self):
-        choices = {
-            "Login": self.log_in,
-            "Exit Spotidex": self.exit_program,
-        }
+    def __init_widget(self):
+        choices = [
+            Choice("Login", self.log_in),
+            Choice("Exit Spotidex", TerminalWrapper.exit),
+        ]
         
         title = "Welcome to Spotidex"
         self.login_status = urwid.Text("")
@@ -25,14 +27,19 @@ class LoginScreen:
         menu.add_text(self.login_status)
         return menu.build()
     
-    def exit_program(self, button):
-        raise urwid.ExitMainLoop()
+    def log_in_result(self, data):
+        self.login_status.set_text(self.__vm.message)
+    
+        if self.__vm.success:
+            TerminalWrapper.change_screen(MainMenu())
     
     def log_in(self, button):
         self.login_status.set_text("Attempting to login, press ctrl C to cancel")
-        success, message = self.viewModel.login()
-        self.login_status.set_text(message)
+        
+        
+        self.__vm.login()
         
     
-    def get_widget(self):
-        return self.__login_menu
+    @property
+    def widget(self):
+        return self.__widget

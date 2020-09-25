@@ -1,5 +1,13 @@
 import urwid
-from typing import Dict, Callable
+from typing import List, Callable
+
+
+class Choice:
+    
+    def __init__(self, label: str, callback: Callable, description: str = ""):
+        self.label = label
+        self.callback = callback
+        self.description = description
 
 
 class Menu:
@@ -18,11 +26,11 @@ class Menu:
         if div:
             self.__body.append(self.div)
     
-    def add_choice_block(self, choices: Dict[str, Callable]) -> None:
+    def add_choice_block(self, choices: List[Choice], description=False) -> None:
         
         for choice in choices:
-            button = urwid.Button(choice)
-            urwid.connect_signal(button, 'click', choices[choice])
+            button = urwid.Button(choice.label)
+            urwid.connect_signal(button, 'click', choice.callback)
             self.__body.append(urwid.AttrMap(button, None, focus_map='reversed'))
     
     def build(self) -> urwid.Padding:

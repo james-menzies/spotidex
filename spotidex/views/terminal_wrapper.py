@@ -1,11 +1,13 @@
+from typing import Protocol, Callable
+from threading import Thread
 import urwid
-from typing import Protocol
-from .login_screen import LoginScreen
 
 
 class View(Protocol):
-    def get_widget(self) -> urwid.Widget:
-        ...
+    
+    @property
+    def widget(self) -> urwid.Widget:
+        return urwid.SolidFill()
 
 
 class TerminalWrapper:
@@ -21,10 +23,20 @@ class TerminalWrapper:
     
     @classmethod
     def start_application(cls, initial_screen: View) -> None:
-        cls.__loop.widget = urwid.AttrMap(initial_screen.get_widget(), 'bg')
-        
+        cls.__loop.widget = urwid.AttrMap(initial_screen.widget, 'bg')
         cls.__loop.run()
     
     @classmethod
     def change_screen(cls, view: View):
-        cls.__loop.widget = view.get_widget()
+        cls.__loop.widget = urwid.AttrMap(view.widget, 'bg')
+        
+    @staticmethod
+    def exit():
+        raise urwid.ExitMainLoop()
+    
+    @classmethod
+    def run_task(cls, entry_point: Callable, update: Callable):
+        thread = Thread(target=entry_point)
+        obj = cls.__loop.watch_pipe(update)
+
+        
