@@ -3,7 +3,6 @@ from spotidex.viewmodels.login_screen_vm import LoginScreenVM
 from .components import Menu, Choice
 from .main_menu import MainMenu
 from .terminal_wrapper import TerminalWrapper
-from threading import Thread
 
 
 class LoginScreen:
@@ -28,16 +27,17 @@ class LoginScreen:
         return menu.build()
     
     def log_in_result(self, data):
-        self.login_status.set_text(self.__vm.message)
+        self.login_status.set_text(data)
     
         if self.__vm.success:
             TerminalWrapper.change_screen(MainMenu())
     
     def log_in(self, button):
-        self.login_status.set_text("Attempting to login, press ctrl C to cancel")
         
+        TerminalWrapper.run_task(self.__vm.login, update=self.log_in_result)
         
-        self.__vm.login()
+    
+    
         
     
     @property
