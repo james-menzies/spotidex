@@ -9,7 +9,6 @@ class LoginScreen:
     
     def __init__(self):
         self.__widget = self.__init_widget()
-        
         self.__vm = LoginScreenVM()
     
     def __init_widget(self):
@@ -28,17 +27,12 @@ class LoginScreen:
     
     def log_in_result(self, data):
         self.login_status.set_text(data)
-    
+        
         if self.__vm.success:
             TerminalWrapper.change_screen(MainMenu())
     
     def log_in(self, button):
-        
         TerminalWrapper.run_task(self.__vm.login, update=self.log_in_result)
-        
-    
-    
-        
     
     @property
     def widget(self):

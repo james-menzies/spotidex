@@ -79,7 +79,7 @@ class SpotifyAuth:
             except (SpotifyOauthError, KeyboardInterrupt):
                 # user cancels login, abort connection
                 return False
-            except:
+            except Exception:
                 # Likely some error involving the cached token.
                 # There are too many to specify, so it must be a catch all.
                 # Loop will run again to correct issue.

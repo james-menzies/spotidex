@@ -1,7 +1,10 @@
 from spotidex.models.spotifyAuth import SpotifyAuth
 from .components import Menu, Choice
-from .terminal_wrapper import TerminalWrapper
 import urwid
+
+from .entry import Entry
+from . import login_screen
+from .terminal_wrapper import TerminalWrapper
 
 
 class MainMenu:
@@ -32,10 +35,11 @@ class MainMenu:
     
     def begin(self, button):
         pass
-    
+        # TerminalWrapper.change_screen(Entry())
+        
     def logout(self, button):
-        pass
-    
+        TerminalWrapper.change_screen(login_screen.LoginScreen())
+        
     @property
     def widget(self):
         return self.__widget

@@ -41,4 +41,5 @@ class TerminalWrapper:
         write_func = lambda x: os.write(fd, str.encode(str(x)))
         close_func = lambda: cls.__loop.remove_watch_pipe(fd)
         thread = Thread(target=task, args=(write_func, close_func))
+        thread.setDaemon(True)
         thread.start()
