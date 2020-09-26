@@ -10,8 +10,12 @@ class SpotifyTrack:
             "raw_data": raw_data
         }
         
-        self.__information.update(BasicInfo.fetch(self.__information))
-        self.__information.update(ClassicalInfo.fetch(self.__information))
+        contexts = [BasicInfo, ComposerInfo, ClassicalInfo]
+        
+        for context in contexts:
+            info = context.fetch(self.__information)
+            if info:
+                self.__information.update(info)
         
        
     

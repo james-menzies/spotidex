@@ -1,6 +1,5 @@
 import abc
-import json
-from typing import Tuple
+
 import requests
 
 
@@ -12,12 +11,15 @@ class Context:
         pass
 
 
-class BasicInfo(Context):
+class BasicInfo:
     @classmethod
     def fetch(cls, data: dict):
         raw_data = data["raw_data"]
         keys = {}
         final = {"basic_info": keys}
+        if not raw_data:
+            return final
+        
         keys["id"] = raw_data["item"]["id"]
         keys["track"] = raw_data["item"]["name"]
         keys["artists"] = [artist["name"] for artist in raw_data["item"]["artists"]]
@@ -26,19 +28,41 @@ class BasicInfo(Context):
         return final
 
 
-class ClassicalInfo(Context):
-    
+class ComposerInfo:
     @classmethod
     def fetch(cls, data: dict):
         basic_info = data["basic_info"]
-        keys = {}
-        final = {"classical_info": keys}
+        if not basic_info:
+            return
+        
         composer = basic_info["artists"][0]
         composer_info = cls.retrieve_composer_info(composer)
+        return {"composer_info": composer_info}
+    
+    @classmethod
+    def retrieve_composer_info(cls, name: str) -> dict:
+        url = f"https://api.openopus.org/composer/list/search/{name}.json"
+        data = requests.get(url).json()
+        if data["status"]["success"] == 'true':
+            return data["composers"][0]
+        else:
+            return {}
+
+
+class ClassicalInfo:
+    
+    @classmethod
+    def fetch(cls, data: dict):
+        if not data["basic_info"]:
+            return
         
-        if not composer_info:
+        keys = {}
+        final = {"classical_info": keys}
+        if not data["composer_info"]:
             return final
         
+        basic_info = data["basic_info"]
+        composer = basic_info["artists"][0]
         keys["composer"] = composer
         
         last_name = composer.split()[-1]
@@ -50,7 +74,7 @@ class ClassicalInfo(Context):
         if len(track_tokens) > 1:
             keys["movement"] = track_tokens[-1].strip()
             track_tokens.pop(-1)
-    
+        
         track = ":".join(track_tokens)
         if ',' in track:
             work_plus_opus = ":".join(track_tokens).split(',')
@@ -69,12 +93,3 @@ class ClassicalInfo(Context):
             keys["work"] = track.strip()
         
         return final
-
-    @classmethod
-    def retrieve_composer_info(cls, name: str) -> dict:
-        url = f"https://api.openopus.org/composer/list/search/{name}.json"
-        data = requests.get(url).json()
-        if data["status"]["success"] == 'true':
-            return data["composers"][0]
-        else:
-            return {}

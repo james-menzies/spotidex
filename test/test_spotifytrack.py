@@ -7,13 +7,11 @@ auth.establish_connection()
 refresh = auth.currently_playing
 
 song_info = refresh().information
-print("basic info")
-for item in song_info['basic_info'].items():
-    print(item)
 
-print("-------------")
 
-for item in song_info['classical_info'].items():
-    print(item)
+for item, value in song_info.items():
     
-print("------------")
+    print(item)
+    print("----------")
+    for attr in song_info[item].items():
+        print(attr)
