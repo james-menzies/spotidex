@@ -28,6 +28,7 @@ class LoginScreen:
     def log_in_result(self, data):
         self.login_status.set_text(data)
         
+
         if self.__vm.success:
             TerminalWrapper.change_screen(MainMenu())
     

@@ -105,3 +105,11 @@ class SpotifyAuth:
         
         with open(cache_path, "w") as cache_file:
             json.dump(cache_data, cache_file)
+    
+    def log_out(self):
+        self.__endpoint = Spotify(auth_manager=self.__pkce)
+        os.remove(self.__cache_path)
+        self.__current_user = ""
+        self.__connected = False
+
+        

@@ -39,6 +39,7 @@ class MainMenu:
         
     def logout(self, button):
         TerminalWrapper.change_screen(login_screen.LoginScreen())
+        self.__auth.log_out()
         
     @property
     def widget(self):
