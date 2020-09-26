@@ -1,10 +1,7 @@
 ## Entry-VM
 
-The entry VM is the interface that the main perspective of the app interacts
-with. Every time the user refreshes, this class is responsible for making sure 
-all the data is there.
+An Entry-VM manages the entire main display of the app.
 
+When it is loaded, it:
 
-Assume the user has logged in and hits 'begin session'. The Entry View is 
-switched and provides the viewModel with the function to update the screen.
-
+Looks at the settings to determine which views are being displayed.

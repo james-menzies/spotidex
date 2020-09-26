@@ -62,7 +62,7 @@ class SpotifyAuth:
         if not self.__connected and not self.establish_connection():
             raise ValueError("Unable to establish current user, can't provide callback.")
         else:
-            return lambda: self.__endpoint.currently_playing()
+            return lambda: SpotifyTrack(self.__endpoint.currently_playing(), None)
     
     def establish_connection(self, suppress_output=True) -> bool:
         """
@@ -111,5 +111,3 @@ class SpotifyAuth:
         os.remove(self.__cache_path)
         self.__current_user = ""
         self.__connected = False
-
-        

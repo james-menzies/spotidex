@@ -23,6 +23,7 @@ class MainMenu:
             Choice("Log out", self.logout, """
             Log out of Spotidex, note you will need to re-authenticate to re-use.
             """),
+            Choice("Exit Spotidex", TerminalWrapper.exit, )
         ]
         
         menu = Menu("Main Menu")
@@ -34,12 +35,13 @@ class MainMenu:
         pass
     
     def begin(self, button):
-        pass
-        # TerminalWrapper.change_screen(Entry())
+        TerminalWrapper.change_screen(Entry())
         
     def logout(self, button):
         TerminalWrapper.change_screen(login_screen.LoginScreen())
         self.__auth.log_out()
+    
+
         
     @property
     def widget(self):
