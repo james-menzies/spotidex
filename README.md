@@ -21,7 +21,7 @@ Hence... Spotidex.
 
 ## How To Use This Program
 
-### Main Menu
+### Login Screen
 
 In order to begin a session on Spotidex, you need to allow the program to 
 authorize the program to view certain information from your Spotify account:
@@ -30,9 +30,15 @@ authorize the program to view certain information from your Spotify account:
 * Your currently playing information
 
 
+You'll only have to do this the first time you authorize the app, any subsequent launches of the p Please note though, you will need to reauthorize the app if you log out at any point. 
 
+When you select login, your default browser will open a window where you can login to Spotify. When you do, you should be automatically taken to the main menu. 
+
+> NB: If you close the browser window without cancelling or logging in, you will need to close and reopen the program. This is an issue with a 3rd party module.
 
 ### Session Screen
+
+This is where you can view more information about the track that you're listening to. 
 
 ### Settings
 
