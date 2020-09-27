@@ -18,21 +18,19 @@ class LoginScreen:
         ]
         
         title = "Welcome to Spotidex"
-        self.login_status = urwid.Text("")
         
         menu = Menu(title=title)
         menu.add_choice_block(choices)
-        menu.add_text(self.login_status)
         return menu.build()
     
-    def log_in_result(self, data):
-        self.login_status.set_text(data)
+    def login_update(self, data):
+        TerminalWrapper.flash_message(data)
         
         if self.__vm.success:
             TerminalWrapper.change_screen(MainMenu())
     
     def log_in(self, button):
-        TerminalWrapper.run_task(self.__vm.login, update=self.log_in_result)
+        TerminalWrapper.run_task(self.__vm.login, update=self.login_update)
     
     @property
     def widget(self):
