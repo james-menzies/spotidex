@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 import urwid
 from abc import abstractmethod
@@ -16,9 +16,11 @@ def generate_column_view(*columns: List[str]) -> urwid.Widget:
 
 
 class BaseSubView:
-    __placeholder = urwid.Filler(urwid.Text("No information available."))
     
-    def __init__(self):
+
+    
+    def __init__(self, placeholder: str = "No information avaliable"):
+        self.__placeholder = urwid.Filler(urwid.Text(placeholder))
         self.__widget = self.__placeholder
         self.__title = "Generic View"
     

@@ -37,14 +37,6 @@ class View(Protocol):
         ...
 
 
-class SubView(View):
-    
-    def update_widget(self) -> None:
-        ...
-
-    def title(self) -> str:
-        ...
-    
 class TerminalWrapper:
     __palette = {
         ('bg', 'dark green', 'black',),

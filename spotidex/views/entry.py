@@ -1,46 +1,49 @@
 import urwid
 
+from spotidex.viewmodels.entry_vm import EntryVM
 from .scroll import Scrollable
 from .subviews import *
+from . import main_menu
+from .terminal_wrapper import TerminalWrapper
+
+
+
+class EntryPile(urwid.Pile):
+    
+    def keypress(self, size, key):
+        key = super().keypress(size, key)
+        if key == 'q':
+            TerminalWrapper.change_screen(main_menu.MainMenu())
+        else:
+            return key
 
 
 class Entry:
     
-    
     def __init__(self):
-        pass
+        self.vm = EntryVM()
+        self.main_view = self.vm.main_view
+        self.sub_views = self.vm.sub_views
+    
+    def update_views(self):
+        
+        data = self.vm.refresh_data()
     
     @property
     def widget(self) -> urwid.Widget:
-        text = """On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains.
+        def callback(button: urwid.Button, index: int) -> None:
+            frame.contents['body'] = (self.sub_views[index].widget, None)
         
-        On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains."
+        buttons = []
+        for index, view in enumerate(self.sub_views):
+            buttons.append(urwid.LineBox(urwid.Button(view.title, callback, index)))
         
-        On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains."
-        """
-        
-        subframes = {}
-        text = [urwid.Text(line) for line in text.splitlines()]
-        captions = "ComposerView ClassicalView WorkView BasicInfo".split()
-        
-        items = [urwid.LineBox(urwid.Button(caption)) for caption in captions]
-        
-        walker = urwid.SimpleFocusListWalker(items)
+        walker = urwid.SimpleFocusListWalker(buttons)
         grid_flow = urwid.GridFlow(walker, cell_width=25, h_sep=1, v_sep=1, align='center')
         
-        def callback(button: urwid.Button, index: int):
-            frame.contents['body'] = (subframes[index], None)
-        
-        for index, caption in enumerate(captions):
-            body = text.copy()
-            body = [urwid.Text(caption), urwid.Divider(div_char='-')] + body
-            info_pile = urwid.Pile(body)
-            scrollable = Scrollable(info_pile)
-            subframes[index] = scrollable
-            urwid.connect_signal(items[index].original_widget, "click", callback, user_arg=index)
-        
-        frame = urwid.Frame(subframes[0])
-        box = urwid.LineBox(frame)
-        box = urwid.BoxAdapter(box, 25)
-        pile = urwid.Pile([grid_flow, box])
+        frame = urwid.Frame(self.sub_views[0].widget)
+        subview_display = urwid.LineBox(frame, title="More info")
+        subview_display = urwid.BoxAdapter(subview_display, 25)
+        main_view_display = urwid.BoxAdapter(self.main_view.widget, 7)
+        pile = EntryPile([main_view_display, grid_flow, subview_display])
         return urwid.Filler(pile)
