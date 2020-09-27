@@ -22,7 +22,7 @@ def _clean_subroutine(*args):
                     os.close(fd)
                 except:
                     pass
-            
+                
                 old_threads.append(thread)
         
         for thread in old_threads:
@@ -33,11 +33,18 @@ def _clean_subroutine(*args):
 
 class View(Protocol):
     
-    @property
     def widget(self) -> urwid.Widget:
-        return urwid.SolidFill()
+        ...
 
 
+class SubView(View):
+    
+    def update_widget(self) -> None:
+        ...
+
+    def title(self) -> str:
+        ...
+    
 class TerminalWrapper:
     __palette = {
         ('bg', 'dark green', 'black',),
