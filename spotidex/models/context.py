@@ -40,7 +40,7 @@ class ComposerInfo:
         
         composer = basic_info["artists"][0]
         if composer in cls._cache:
-            return cls._cache[composer]
+            return {"composer_info": cls._cache[composer]}
 
         composer_info = cls.retrieve_composer_info(composer)
         cls._cache[composer] = composer_info

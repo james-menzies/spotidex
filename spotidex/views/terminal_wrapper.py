@@ -43,8 +43,8 @@ class TerminalWrapper:
         ('reversed', 'black', 'white',),
     }
     __placeholder = urwid.SolidFill()
-    __title = urwid.Text("Spotidex v1.0", align='left')
-    __frame = urwid.Frame(__placeholder, header=__title)
+    __status = urwid.Text(" ", align='left')
+    __frame = urwid.Frame(__placeholder)
     
     __loop = urwid.MainLoop(__frame, palette=__palette)
     
@@ -54,12 +54,12 @@ class TerminalWrapper:
     
     @classmethod
     def start_application(cls, initial_screen: View) -> None:
-        cls.__loop.widget = urwid.AttrMap(initial_screen.widget, 'bg')
+        cls.__frame.contents["body"] = (urwid.AttrMap(initial_screen.widget, 'bg'), None)
         cls.__loop.run()
     
     @classmethod
     def change_screen(cls, view: View):
-        cls.__loop.widget = urwid.AttrMap(view.widget, 'bg')
+        cls.__frame.contents["body"] = (urwid.AttrMap(view.widget, 'bg'), None)
     
     @staticmethod
     def exit(button):

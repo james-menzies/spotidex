@@ -8,7 +8,7 @@ def generate_column_view(*columns: List[str]) -> urwid.Widget:
     col_body = []
     
     for column in columns:
-        body = [urwid.Text(item) for item in column]
+        body = [urwid.Text(item, wrap='ellipsis') for item in column]
         walker = urwid.SimpleListWalker(body)
         col_body.append(urwid.ListBox(walker))
     
