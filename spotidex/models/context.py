@@ -29,6 +29,9 @@ class BasicInfo:
 
 
 class ComposerInfo:
+
+    _cache = {}
+
     @classmethod
     def fetch(cls, data: dict):
         basic_info = data["basic_info"]
@@ -36,7 +39,11 @@ class ComposerInfo:
             return
         
         composer = basic_info["artists"][0]
+        if composer in cls._cache:
+            return cls._cache[composer]
+
         composer_info = cls.retrieve_composer_info(composer)
+        cls._cache[composer] = composer_info
         return {"composer_info": composer_info}
     
     @classmethod
