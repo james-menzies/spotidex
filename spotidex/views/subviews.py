@@ -17,8 +17,6 @@ def generate_column_view(*columns: List[str]) -> urwid.Widget:
 
 class BaseSubView:
     
-
-    
     def __init__(self, placeholder: str = "No information avaliable"):
         self.__placeholder = urwid.Filler(urwid.Text(placeholder))
         self.__widget = self.__placeholder
@@ -43,7 +41,9 @@ class ClassicalInfoSubView(BaseSubView):
         super().__init__()
         self.__title = "Classical Info"
     
-    def update_widget(self, data) -> None:
+    
+    
+    def update_widget(self, data) -> urwid.Widget:
         info = data["classical_info"]
         
         if not info:
@@ -52,15 +52,15 @@ class ClassicalInfoSubView(BaseSubView):
         column1 = []
         column2 = []
         
-        if info["movement"]:
+        if "movement" in info:
             string = info["movement"]
-            if info["act"]:
+            if "act" in info:
                 string += f" ({info['act']})"
             column1.append("Movement:")
             column2.append(string)
         
         string = info["work"]
-        if info["opus"]:
+        if "opus" in info:
             string += f" {info['opus']}"
         column1.append("Work:")
         column2.append(string)
@@ -69,3 +69,4 @@ class ClassicalInfoSubView(BaseSubView):
         column2.append(info["composer"])
         
         self.__widget = generate_column_view(column1, column2)
+        return self.__widget

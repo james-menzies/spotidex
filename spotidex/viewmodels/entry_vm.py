@@ -25,7 +25,6 @@ class EntryVM:
         return ClassicalInfoSubView()
     
     def refresh_data(self, write_func: Callable) -> None:
-        write_func("Refreshing...")
         new_song_data = self.__callback().information
         if new_song_data != self.__current_song_data:
             self.__current_song_data = new_song_data
@@ -33,4 +32,4 @@ class EntryVM:
         else:
             self.__last_refresh_request = None
         
-        print("Updated.")
+        write_func("Updated.")
