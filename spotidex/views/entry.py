@@ -31,8 +31,15 @@ class Entry:
         self.sub_views = self.vm.sub_views
     
     def update_views(self, data):
-        new_data = self.vm.last_refresh_request
-        self.main_view_frame.contents["body"] = (self.main_view.update_widget(new_data), None)
+        
+        if not self.vm.matching_song_data and self.vm.current_song_data:
+            self.main_view_frame.contents["body"] = (
+                self.main_view.update_widget(self.vm.current_song_data), None)
+        
+        if self.vm.current_song_data:
+            TerminalWrapper.flash_message(data)
+        else:
+            TerminalWrapper.flash_message(data, clear=False)
     
     def refresh_views(self):
         TerminalWrapper.run_task(self.vm.refresh_data, self.update_views)
@@ -40,7 +47,7 @@ class Entry:
     @property
     def widget(self) -> urwid.Widget:
         def callback(button: urwid.Button, index: int) -> None:
-            subview_frame.contents['body'] = (self.sub_views[index].widget, None)
+            subview_frame.contents['body'] = (self.sub_views[index].update_widget, None)
         
         buttons = []
         for index, view in enumerate(self.sub_views):
