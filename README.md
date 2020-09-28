@@ -178,7 +178,7 @@ I also streamlined the process by exposing a method in the `TerminalWrapper` cla
 ![The update side of the song refresh function](docs/flow_diagrams/refresh.png)
 
 *The background process side of the song refresh function.*
-![The background process side of the song refresh function]()
+![The background process side of the song refresh function](docs/flow_diagrams/refresh_bg.png)
 
 ### Dependencies
 
