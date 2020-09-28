@@ -136,7 +136,7 @@ For this project, I used a number of dependencies:
 * **pillow:** For rendering the composer picture in the subview as ascii art.
 * **beautifulsoup4:** For scraping the Wikipedia pages and rendering the data suitably for the program.
 * **urwid:** The engine the renders all the graphical elements in the program.
-* **stig (scroll module):** This module was written by [rndusr](https://github.com/rndusr/stig/blob/master/stig/tui/scroll.py) which is a scrollable urwid widget. The module is directly added into the code base (along with the license) instead of importing the whole project for efficiency reasons. It is used in the rendering of the wiki based sub views. I would like to publicly thank rndusr for this excellent module.
+* **stig (scroll module):** This module, written by [rndusr](https://github.com/rndusr/stig/blob/master/stig/tui/scroll.py) is a scrollable urwid widget. I have directly added the module into the code base (along with its license) instead of importing the whole project for efficiency reasons. It is used in the rendering of the wiki based sub views. I would like to publicly thank rndusr for this excellent module.
 
 ## Development Process
 
