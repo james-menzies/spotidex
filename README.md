@@ -168,13 +168,17 @@ I also streamlined the process by exposing a method in the `TerminalWrapper` cla
 
 ### Flow Diagrams
 
+*The initialization of the Playback Info view.*
+
 ![The initialization of the Playback Info view](docs/flow_diagrams/init.png)
 
-The initialization of the Playback Info view.
+
+*The update side of the song refresh function.*
 
 ![The update side of the song refresh function](docs/flow_diagrams/refresh.png)
 
-The update side of the song refresh function.
+*The background process side of the song refresh function.*
+![The background process side of the song refresh function]()
 
 ### Dependencies
 
