@@ -109,6 +109,15 @@ or by creating executable binaries for the major platforms.
 
 ## Development Overview
 
+### MVVM Structure
+
+![MVVM Flow Diagram](docs/flow_diagrams/MVVM_outline.png)
+
+### Keeping the App Thread Safe
+
+### Execution Flow
+
+### Dependencies
 
 ## Development Process
 
