@@ -111,11 +111,23 @@ or by creating executable binaries for the major platforms.
 
 ### MVVM Structure
 
+In order to maintain a separation of concerns in this app, I decided upon the MVVM structure. Given that urwid (the GUI terminal emulator I used) has some eccentric properties, it may not adhere exactly to this structure, however for the purposes of this description I'll define it in this way.
+
+Generally speaking there are **_three_** types of components in this app:
+
+* **Models:** These are responsible for the logic and data of the program. Specifically they take care of the authorization, the API calls, rendering the contextual information of the songs, web scraping, caching, and user settings. The models would not change a line of code should the app use a different platform.
+* **Views:** These components take care of the visual rendering of the information to the user, changing out the different scenes in the app, and responding to user input. Views have no knowledge of the model components.
+* **View-Models:** These are known to the view components, and act as a go-between for the model and view classes. They provide methods (or handles) for the views to call when actions are needed that require complex logic. There is one view-model per view (except for the main menu which is too simple to warrant one).
+
 ![MVVM Flow Diagram](docs/flow_diagrams/MVVM_outline.png)
+
+
+#### Execution Flow
+
 
 ### Keeping the App Thread Safe
 
-### Execution Flow
+### How the Refresh Function Works, Step-By-Step
 
 ### Dependencies
 
