@@ -130,6 +130,13 @@ My solution was to expose the models through static and class methods. In the ca
 
 ### Keeping the App Thread Safe
 
+One of the real challenges in development was safely updating the graphical display without creating a race event and crashing the program. Urwid exposes a method in its main loop to do this safely:
+
+``` py
+def watch_pipe(callback: Callable) -> int:
+    ...
+```
+
 ### How the Refresh Function Works, Step-By-Step
 
 ### Dependencies
