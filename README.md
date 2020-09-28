@@ -119,11 +119,14 @@ Generally speaking there are **_three_** types of components in this app:
 * **Views:** These components take care of the visual rendering of the information to the user, changing out the different scenes in the app, and responding to user input. Views have no knowledge of the model components.
 * **View-Models:** These are known to the view components, and act as a go-between for the model and view classes. They provide methods (or handles) for the views to call when actions are needed that require complex logic. There is one view-model per view (except for the main menu which is too simple to warrant one).
 
+#### Execution Flow
 ![MVVM Flow Diagram](docs/flow_diagrams/MVVM_outline.png)
 
+Whilst the diagram doesn't warrant much explanation there is one topic that warrants further explanation, namely how the view-models 'statically' access the model components. 
 
-#### Execution Flow
+Firstly we need to consider the problem. The view creates the view-models, but can have no knowledge of the models. Therefore, no models can be passed to the view-models, potentially meaning that there is no way for the models to be accessed by the view-models.
 
+My solution was to expose the models through static and class methods. In the case where an instance of a class needed to be accessed (such as the `SpotifyAuth` class) a Singleton pattern was employed. As a result, the integrity of the MVVM pattern was maintained.
 
 ### Keeping the App Thread Safe
 
