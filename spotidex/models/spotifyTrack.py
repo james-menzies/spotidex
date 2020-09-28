@@ -16,8 +16,6 @@ class SpotifyTrack:
             info = context.fetch(self.__information)
             if info:
                 self.__information.update(info)
-        
-       
     
     @property
     def information(self):
