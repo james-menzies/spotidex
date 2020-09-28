@@ -39,7 +39,7 @@ class BaseSubView:
         pass
     
     @staticmethod
-    def _get_data_section(data: Optional[Dict], key: str, req_attrs: Optional[List] =None) -> Optional[Dict]:
+    def _get_data_section(data: Optional[Dict], key: str, req_attrs: Optional[List] = None) -> Optional[Dict]:
         """
         Convenience method for getting the correct section of data passed in
         to update method. Will validate return None if either the section of
@@ -62,12 +62,13 @@ class BaseSubView:
 
 class ClassicalInfoSubView(BaseSubView):
     
-
     def __init__(self):
         super().__init__(title="Classical Info")
         self.__widget = self._placeholder
     
-    
+    @property
+    def widget(self):
+        return self.__widget
     
     def update_widget(self, data: Optional[dict] = None) -> urwid.Widget:
         
@@ -100,13 +101,12 @@ class RawInfoSubView(BaseSubView):
     def __init__(self):
         super().__init__(title="Raw Spotify Info")
         self.__widget = self._placeholder
-
+    
     @property
     def widget(self):
         return self.__widget
-
+    
     def update_widget(self, data: Optional[dict] = None) -> urwid.Widget:
-        
         data = self._get_data_section(data, "basic_info", ["track", "artists", "album"])
         if not data:
             return self._placeholder
