@@ -91,6 +91,7 @@ class TerminalWrapper:
         fd = cls.__loop.watch_pipe(update)
         thread = Thread(target=task, args=(write_func,))
         thread.setDaemon(True)
+        # store reference to thread for background cleanup
         current_threads[thread] = fd
         thread.start()
         thread_lock.release()

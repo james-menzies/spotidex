@@ -132,9 +132,38 @@ My solution was to expose the models through static and class methods. In the ca
 
 One of the real challenges in development was safely updating the graphical display without creating a race event and crashing the program. Urwid exposes a method in its main loop to do this safely:
 
-``` py
-def watch_pipe(callback: Callable) -> int:
+```python
+def watch_pipe(callback: Callable[[data: bytes], None]) -> int:
     ...
+```
+
+The `int` value returned by this method can be written to with the `os.write(pipe: int)` function. Any time this happens the callback method will be called, and the display can be safely updated. The steps are:
+
+1. Create a function which is meant to run in the background that takes an `int` value as a parameter.
+2. Create a thread that targets that function.
+3. Create a function to respond to any updates.
+4. Call the `watch_pipe` method passing the update function, and run the created thread, passing the return value as an argument.
+
+> Note that you can only run the update method by calling os.write in the background thread, so sometimes it is necessary to print noise just to get an update callback to trigger.
+
+The pipe resource created must also be closed, both at the read and write ends. I encountered crashed when trying to close it down in the process itself, so I solved this by running a background process that periodically cleaned up old threads.
+
+I also streamlined the process by exposing a method in the `TerminalWrapper` class, where I could pass a task function (from the view-model) and the update function (from the view) and have the threads be created automatically. Here is that code segment:
+
+```python
+@classmethod
+    def run_task(cls, task: Callable, update: Callable) -> None:
+        
+        thread_lock.acquire() #thread_lock is a threading.Lock object
+        write_func = lambda x: os.write(fd, str.encode(str(x)))
+        fd = cls.__loop.watch_pipe(update)
+        thread = Thread(target=task, args=(write_func,))
+        thread.setDaemon(True)
+        # store reference to thread for background cleanup.
+        # current_threads is a module dict-type variable.
+        current_threads[thread] = fd
+        thread.start()
+        thread_lock.release()
 ```
 
 ### How the Refresh Function Works, Step-By-Step
