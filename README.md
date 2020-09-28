@@ -119,6 +119,25 @@ or by creating executable binaries for the major platforms.
 
 ### Dependencies
 
+For this project, I used a number of dependencies:
+
+#### Python Standard Modules:
+
+* **os/sys/shutil/time:** Various file and OS related tasks.
+* **unittest:** For both automated and manual testing.
+* **typing:** For type hinting and error checking.
+* **threading:** For allowing background and GUI processes to run efficiently and safely.
+* **abc:** For implementing abstract classes.
+* **json/requests:** For processing API calls.
+
+#### Third-Party Modules:
+
+* **spotipy:** This streamlined the process of gaining Spotify authorization through PKCE.
+* **pillow:** For rendering the composer picture in the subview as ascii art.
+* **beautifulsoup4:** For scraping the Wikipedia pages and rendering the data suitably for the program.
+* **urwid:** The engine the renders all the graphical elements in the program.
+* **stig (scroll module):** This module was written by [rndusr](https://github.com/rndusr/stig/blob/master/stig/tui/scroll.py) which is a scrollable urwid widget. The module is directly added into the code base (along with the license) instead of importing the whole project for efficiency reasons. It is used in the rendering of the wiki based sub views. I would like to publicly thank rndusr for this excellent module.
+
 ## Development Process
 
 For this initial version, I am using this 
@@ -131,6 +150,4 @@ automatically feed into this board.
 These are some more detailed discussions about specific parts of the 
 development process. They are all contained in the /docs folder of the repo.
 
-* [Coding the Spotify Endpoint](#spotidex) (Link not yet functional, for 
-templating purposes only)
-
+(Coming Soon)
