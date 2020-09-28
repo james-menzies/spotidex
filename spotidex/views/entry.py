@@ -47,7 +47,7 @@ class Entry:
     @property
     def widget(self) -> urwid.Widget:
         def callback(button: urwid.Button, index: int) -> None:
-            subview_frame.contents['body'] = (self.sub_views[index].update_widget, None)
+            subview_frame.contents['body'] = (self.sub_views[index].update_widget(), None)
         
         buttons = []
         for index, view in enumerate(self.sub_views):
@@ -56,10 +56,10 @@ class Entry:
         walker = urwid.SimpleFocusListWalker(buttons)
         grid_flow = urwid.GridFlow(walker, cell_width=25, h_sep=1, v_sep=1, align='center')
         
-        subview_frame = urwid.Frame(self.sub_views[0].widget)
+        subview_frame = urwid.Frame(self.sub_views[0].update_widget())
         subview_display = urwid.LineBox(subview_frame, title="More info")
         subview_display = urwid.BoxAdapter(subview_display, 25)
-        self.main_view_frame = urwid.Frame(self.main_view.widget)
+        self.main_view_frame = urwid.Frame(self.main_view.update_widget())
         main_view_display = urwid.BoxAdapter(self.main_view_frame, 7)
         pile = EntryPile([main_view_display, grid_flow, subview_display], self.refresh_views)
         return urwid.Filler(pile)
