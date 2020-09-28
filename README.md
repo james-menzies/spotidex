@@ -9,7 +9,7 @@
 This terminal application is designed to run alongside an active Spotify 
 session, passively using the Spotify API to gather information about a track
 which the user is currently listening to. The app then queries classical music 
-APIs in order to deliver a robust context that track. This is not unlike a 
+APIs in order to deliver a robust context for that track. This is not unlike a 
 device in the video game Pokemon (known as a Pokedex) which the protagonist Ash
 uses to gain information about creatures he spots in the wild.
 
@@ -30,7 +30,7 @@ authorize the program to view certain information from your Spotify account:
 * Your currently playing information
 
 
-You'll only have to do this the first time you authorize the app, any subsequent launches of the p Please note though, you will need to reauthorize the app if you log out at any point. 
+You'll only have to do this the first time you authorize the app however, as any subsequent launches of the program will bypass this step. Please note though, you will need to reauthorize the app if you log out at any point. 
 
 When you select login, your default browser will open a window where you can login to Spotify. When you do, you should be automatically taken to the main menu. 
 
@@ -38,9 +38,32 @@ When you select login, your default browser will open a window where you can log
 
 ### Session Screen
 
-This is where you can view more information about the track that you're listening to. 
+This is the main screen of the program, where you can get a more in-depth view of the piece you're listening to. The main components are:
+
+#### Main View:
+
+This will display the track information in a way more suited for classical music than a normal streaming service would provide. The view will break up the information by movement, work and composer. 
+
+#### Sub-Views:
+
+Clicking on one of the sub-view buttons will provide an extra context about the current track. See [Settings](#settings) below for more information.
+
+#### Navigation Controls:
+
+There are several buttons that you can use to navigate Spotidex. Here are their functions:
+
+* **Refresh:** This will query Spotify for the newest track and update any information on the screen if necessary. Spotidex will automatically update the screen every minute automatically as well.
+* **Static:** This will prevent automatic refreshing of the screen.
+* **Previous/Next:** This will scan forward and back through the track information for songs previously scanned by Spotidex. This will disarm the automatic refresh function of the page as well.
+* **Current:** This will snap Spotidex back to the current song, refresh the screen and re-enable the automatic refresh function.
 
 ### Settings
+
+The settings allow you to customize the session screen, by allowing you to toggle which views you can see when songs are identified by Spotidex. The views available to you are:
+* **Raw Info:** This lets you see the original track, album and artist info which you would normally see if you were using the Spotify app.
+* **Composer:** This will provide the basic information, an ascii art picture, and wikipedia page for the composer of the track that you're listening to.
+* **Work:** The wikipedia page for the work you're listening to.
+* **Recommended:** A list of popular works by the same composer that you might be interested in checking out.
 
 
 ## Benchmarks and Criteria
@@ -52,8 +75,7 @@ four main criteria that are equally weighted:
 
 1. How well I describe what the app is trying to achieve, how to interact with
 it, and how the program achieves it on a high level. In other words, how
-thorough this **README** file is. The specific criteria is addressed in under 
-the [Development Overview](#development-overview)
+thorough this **README** file is. The specific criteria is addressed in the [Development Overview](#development-overview) section.
 2. How well I utilize OOP to create the structures needed to deliver the 
 solutions for my program, i.e. how well written my model classes are.
 3.  How well I utilize OOP to handle input and output of my program, i.e. how 
