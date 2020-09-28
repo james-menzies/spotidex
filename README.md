@@ -146,7 +146,7 @@ The `int` value returned by this method can be written to with the `os.write(pip
 
 > Note that you can only run the update method by calling os.write in the background thread, so sometimes it is necessary to print noise just to get an update callback to trigger.
 
-The pipe resource created must also be closed, both at the read and write ends. I encountered crashed when trying to close it down in the process itself, so I solved this by running a background process that periodically cleaned up old threads.
+The pipe resource created must also be closed, both at the read and write ends. I encountered crashing when trying to close it down in the process itself, so I solved this by running a background process in `TerminalWrapper` that periodically cleaned up old threads.
 
 I also streamlined the process by exposing a method in the `TerminalWrapper` class, where I could pass a task function (from the view-model) and the update function (from the view) and have the threads be created automatically. Here is that code segment:
 
@@ -166,7 +166,15 @@ I also streamlined the process by exposing a method in the `TerminalWrapper` cla
         thread_lock.release()
 ```
 
-### How the Refresh Function Works, Step-By-Step
+### Flow Diagrams
+
+![The initialization of the Playback Info view](docs/flow_diagrams/init.png)
+
+The initialization of the Playback Info view.
+
+![The update side of the song refresh function](docs/flow_diagrams/refresh.png)
+
+The update side of the song refresh function.
 
 ### Dependencies
 
@@ -195,10 +203,3 @@ For this initial version, I am using this
 [Github project board](https://github.com/redbrickhut/spotidex/projects/1) to 
 manage my actionable tasks. Any issues or pull requests that are made will 
 automatically feed into this board. 
-
-## In-Depth Logs
-
-These are some more detailed discussions about specific parts of the 
-development process. They are all contained in the /docs folder of the repo.
-
-(Coming Soon)
