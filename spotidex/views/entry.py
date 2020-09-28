@@ -7,20 +7,38 @@ from . import main_menu
 from .terminal_wrapper import TerminalWrapper
 
 
+# class EntryPile(urwid.Pile):
+#
+#     def __init__(self, widget_list, refresh_func):
+#         super().__init__(widget_list)
+#         self.refresh_func = refresh_func
+#
+#     def keypress(self, size, key):
+#         key = super().keypress(size, key)
+#         if key == 'q':
+#             TerminalWrapper.change_screen(main_menu.MainMenu())
+#         elif key == 'r':
+#             self.refresh_func()
+#         else:
+#             return key
+#
+
 class EntryPile(urwid.Pile):
     
-    def __init__(self, widget_list, refresh_func):
+    def __init__(self, widget_list):
         super().__init__(widget_list)
-        self.refresh_func = refresh_func
+        self.callbacks: Dict[str, Callable] = {}
     
-    def keypress(self, size, key):
+    def keypress(self, size, key) -> None:
         key = super().keypress(size, key)
-        if key == 'q':
-            TerminalWrapper.change_screen(main_menu.MainMenu())
-        elif key == 'r':
-            self.refresh_func()
-        else:
-            return key
+        if key in self.callbacks:
+            self.callbacks[key]()
+    
+    def register_button(self, btn: urwid.Button, key: str) -> None:
+        btn.set_label(f"{btn.label} ({key.upper()})")
+        callback = lambda: btn.keypress((15,), 'enter')
+        self.callbacks[key] = callback
+        self.callbacks[key.upper()] = callback
 
 
 class Entry:
