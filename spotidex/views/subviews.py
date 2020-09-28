@@ -107,7 +107,7 @@ class RawInfoSubView(BaseSubView):
 
     def update_widget(self, data: Optional[dict] = None) -> urwid.Widget:
         
-        data = self._get_data_section(data, "basic_info", ["track", "artist", ""])
+        data = self._get_data_section(data, "basic_info", ["track", "artists", "album"])
         if not data:
             return self._placeholder
         
