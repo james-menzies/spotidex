@@ -43,6 +43,6 @@ class Session:
         for index, t in enumerate(self.__tracks):
             if t == track:
                 self.__tracks[index] = track
-        
-        self.__tracks.append(track)
+        if not self.__tracks or not self.__tracks[-1] == track:
+            self.__tracks.append(track)
         self.__index = len(self.__tracks) - 1
