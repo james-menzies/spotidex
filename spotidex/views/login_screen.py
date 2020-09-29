@@ -10,6 +10,8 @@ class LoginScreen:
     def __init__(self):
         self.__widget = self.__init_widget()
         self.__vm = LoginScreenVM()
+        
+        self.write_pipe = TerminalWrapper.get_pipe(self.login_update)
     
     def __init_widget(self):
         choices = [
@@ -30,7 +32,7 @@ class LoginScreen:
             TerminalWrapper.change_screen(MainMenu())
     
     def log_in(self, button):
-        TerminalWrapper.run_task(self.__vm.login, update=self.login_update)
+        TerminalWrapper.run_task(self.__vm.login, self.write_pipe)
     
     @property
     def widget(self):

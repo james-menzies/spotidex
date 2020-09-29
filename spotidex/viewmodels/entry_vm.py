@@ -67,7 +67,7 @@ class EntryVM:
         
         self.__auto_lock.release()
     
-    def refresh_data(self, write_func: Callable) -> bool:
+    def refresh_data(self, write_func: Callable) -> None:
         self.__refresh_lock.acquire()
         
         self.__previous_song_data = self.__current_song_data
@@ -75,9 +75,12 @@ class EntryVM:
         self.__matching_song_data = False
         
         write_func("Refreshing...")
-        
-        self.__current_song_data = self.__callback().information
-
+        try:
+            self.__current_song_data = self.__callback().information
+        except Exception:
+            write_func("Can't connect to Spotify")
+            return
+            
         if not self.current_song_data or not self.previous_song_data:
             self.__matching_song_data = self.current_song_data == self.previous_song_data
         else:
@@ -87,4 +90,3 @@ class EntryVM:
         
         write_func("Updated.")
         self.__refresh_lock.release()
-        return False
