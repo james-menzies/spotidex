@@ -147,4 +147,3 @@ class RecommendedSubView(BaseSubView):
         pile = urwid.Pile([title, div, *labels])
         self.__widget = urwid.Filler(pile)
         return self.__widget
-        

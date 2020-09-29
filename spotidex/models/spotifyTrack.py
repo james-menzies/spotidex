@@ -17,7 +17,7 @@ class SpotifyTrack:
                 "raw_data": raw_data
             }
         
-        contexts = [BasicInfo, ComposerInfo, ClassicalInfo, RecommendedInfo, ComposerWikiInfo]
+        contexts = [BasicInfo, ComposerInfo, ClassicalInfo, RecommendedInfo, ComposerWikiInfo, WorkWikiInfo]
         
         for context in contexts:
             info = context().fetch(self.__information)
