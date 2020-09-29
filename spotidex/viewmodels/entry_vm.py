@@ -33,6 +33,8 @@ class EntryVM:
     def main_view(self) -> BaseSubView:
         return ClassicalInfoSubView()
     
+
+    
     def refresh_data(self, write_func: Callable) -> None:
         
         self.__previous_song_data = self.__current_song_data

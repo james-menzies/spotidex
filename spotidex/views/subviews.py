@@ -18,7 +18,7 @@ def generate_column_view(*columns: List[str]) -> urwid.Widget:
 class BaseSubView:
     
     def __init__(self, title: str = "Generic View", placeholder: str = "No information avaliable"):
-        self._placeholder = urwid.Filler(urwid.Text(placeholder))
+        self._placeholder = urwid.Filler(urwid.Text(placeholder, align='center'))
         self.__title = title
     
     @property
