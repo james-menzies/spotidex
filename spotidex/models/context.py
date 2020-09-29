@@ -11,7 +11,7 @@ class Context:
         pass
 
 
-class BasicInfo:
+class BasicInfo(Context):
     @classmethod
     def fetch(cls, data: dict):
         raw_data = data["raw_data"]
@@ -29,10 +29,9 @@ class BasicInfo:
         return final
 
 
-class ComposerInfo:
-
+class ComposerInfo(Context):
     _cache = {}
-
+    
     @classmethod
     def fetch(cls, data: dict):
         basic_info = data["basic_info"]
@@ -42,7 +41,7 @@ class ComposerInfo:
         composer = basic_info["artists"][0]
         if composer in cls._cache:
             return {"composer_info": cls._cache[composer]}
-
+        
         composer_info = cls.retrieve_composer_info(composer)
         cls._cache[composer] = composer_info
         return {"composer_info": composer_info}
@@ -57,7 +56,7 @@ class ComposerInfo:
             return {}
 
 
-class ClassicalInfo:
+class ClassicalInfo(Context):
     
     @classmethod
     def fetch(cls, data: dict):
@@ -99,5 +98,24 @@ class ClassicalInfo:
             keys["act"] = tokens[-1].strip()
         else:
             keys["work"] = track.strip()
+        
+        return final
+
+
+class RecommendedInfo(Context):
+    
+    @classmethod
+    def fetch(cls, data: dict) -> True:
+        
+        keys = {}
+        final = {"recommended_info": keys}
+        
+        composer_id = data["composer_info"]["id"]
+        params = {
+            "composer": {composer_id}
+        }
+        results = requests.get(f"https://api.openopus.org/dyn/work/random", params=params).json()
+        keys["works"] = [work["title"] for work in results["works"]][:10]
+        
         
         return final

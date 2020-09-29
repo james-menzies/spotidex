@@ -34,7 +34,7 @@ class EntryVM:
     
     @property
     def sub_views(self) -> List[BaseSubView]:
-        return [RawInfoSubView(), ClassicalInfoSubView()]
+        return [RawInfoSubView(), RecommendedSubView()]
     
     @property
     def main_view(self) -> BaseSubView:

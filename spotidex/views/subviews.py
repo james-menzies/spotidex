@@ -105,16 +105,46 @@ class RawInfoSubView(BaseSubView):
     
     @property
     def widget(self):
-        
         return self.__widget
     
     def update_widget(self, data: Optional[dict] = None) -> urwid.Widget:
         data = self._get_data_section(data, "basic_info", ["track", "artists", "album"])
         if not data:
             self.__widget = self._placeholder
-            return self._placeholder
+            return self.__widget
         
         column1 = ["Track:", "Album:", "Artist(s):"]
         column2 = [data["track"], data["album"], *data["artists"]]
         self.__widget = generate_column_view(column1, column2)
         return self.__widget
+
+
+class RecommendedSubView(BaseSubView):
+    
+    def __init__(self):
+        super().__init__(title="Other Works")
+        self.__widget = self._placeholder
+    
+    @property
+    def widget(self):
+        return self.__widget
+
+    def update_widget(self, data: Optional[dict] = None) -> urwid.Widget:
+        
+        data1 = self._get_data_section(data, "recommended_info", ["works"])
+        data2 = self._get_data_section(data, "composer_info", ["name"])
+        if not data1 or data2:
+            self.__widget = self._placeholder
+            return self.__widget
+        
+        works = data["works"]
+        if not isinstance(works, list):
+            self.__widget = self._placeholder
+            return self.__widget
+        title = urwid.Text(f"Other Works by data", align='center')
+        div = urwid.Divider(div_char='-', top=1, bottom=1)
+        labels = [urwid.Text(str(work), align='center') for work in works]
+        pile = urwid.Pile([title, div, *labels])
+        self.__widget = urwid.Filler(pile)
+        return self.__widget
+        
