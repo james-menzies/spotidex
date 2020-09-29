@@ -1,6 +1,6 @@
 from typing import List, Optional, Tuple
 
-from models.spotifyTrack import SpotifyTrack
+from .spotifyTrack import SpotifyTrack
 
 
 class Session:
@@ -19,22 +19,22 @@ class Session:
         self.__tracks: List[SpotifyTrack] = []
         self.__index = None
     
-    def get_previous(self) -> Optional[SpotifyTrack]:
+    def get_previous(self) -> Tuple[str, Optional[SpotifyTrack]]:
         return self.__retrieve_track(self.__index - 1)
     
-    def get_next(self) -> Optional[SpotifyTrack]:
+    def get_next(self) -> Tuple[str, Optional[SpotifyTrack]]:
         return self.__retrieve_track(self.__index + 1)
     
-    def __retrieve_track(self, index):
+    def __retrieve_track(self, index) -> Tuple[str, Optional[SpotifyTrack]]:
         
         if not self.__tracks:
-            return None
+            return "No tracks played yet.", None
         
         if 0 <= index < len(self.__tracks):
             self.__index = index
-            return self.__tracks[index]
-        else:
-            return None
+            return f"At track{index} of {len(self.__tracks)}", self.__tracks[index]
+        elif index < 0:
+            return "Reached start of playback", None
     
     def add_track(self, track: SpotifyTrack) -> None:
         
@@ -43,3 +43,4 @@ class Session:
                 self.__tracks[index] = track
         
         self.__tracks.append(track)
+        self.__index = len(self.__tracks) - 1

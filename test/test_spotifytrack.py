@@ -1,3 +1,5 @@
+import json
+
 from spotidex.models.spotifyAuth import SpotifyAuth
 
 auth = SpotifyAuth()
@@ -15,3 +17,5 @@ for item, value in song_info.items():
     print("----------")
     for attr in song_info[item].items():
         print(attr)
+        
+    

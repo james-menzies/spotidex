@@ -29,8 +29,6 @@ class EntryPile(urwid.Pile):
 
 class Entry:
     
-    
-    
     def __init__(self):
         
         self.vm: EntryVM = EntryVM()
@@ -140,4 +138,3 @@ class Entry:
             self.refresh_views(button)
         else:
             TerminalWrapper.flash_message("Static Mode", clear=False)
-        
