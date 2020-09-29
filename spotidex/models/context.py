@@ -1,19 +1,19 @@
 import abc
 
 import requests
+from .wikipediaScraper import WikipediaScraper
 
 
 class Context:
     
-    @classmethod
     @abc.abstractmethod
-    def fetch(cls, data: dict) -> True:
+    def fetch(self, data: dict):
         pass
 
 
 class BasicInfo(Context):
-    @classmethod
-    def fetch(cls, data: dict):
+    
+    def fetch(self, data: dict):
         raw_data = data["raw_data"]
         keys = {}
         final = {"basic_info": keys}
@@ -32,22 +32,21 @@ class BasicInfo(Context):
 class ComposerInfo(Context):
     _cache = {}
     
-    @classmethod
-    def fetch(cls, data: dict):
+    def fetch(self, data: dict):
         basic_info = data["basic_info"]
         if not basic_info:
             return
         
         composer = basic_info["artists"][0]
-        if composer in cls._cache:
-            return {"composer_info": cls._cache[composer]}
+        if composer in self._cache:
+            return {"composer_info": self._cache[composer]}
         
-        composer_info = cls.retrieve_composer_info(composer)
-        cls._cache[composer] = composer_info
+        composer_info = self.retrieve_composer_info(composer)
+        self._cache[composer] = composer_info
         return {"composer_info": composer_info}
     
-    @classmethod
-    def retrieve_composer_info(cls, name: str) -> dict:
+    @staticmethod
+    def retrieve_composer_info(name: str) -> dict:
         url = f"https://api.openopus.org/composer/list/search/{name}.json"
         data = requests.get(url).json()
         if data["status"]["success"] == 'true':
@@ -58,8 +57,7 @@ class ComposerInfo(Context):
 
 class ClassicalInfo(Context):
     
-    @classmethod
-    def fetch(cls, data: dict):
+    def fetch(self, data: dict):
         if not data["basic_info"]:
             return
         
@@ -104,9 +102,7 @@ class ClassicalInfo(Context):
 
 class RecommendedInfo(Context):
     
-    @classmethod
-    def fetch(cls, data: dict) -> True:
-        
+    def fetch(self, data: dict) -> True:
         keys = {}
         final = {"recommended_info": keys}
         
@@ -117,5 +113,51 @@ class RecommendedInfo(Context):
         results = requests.get(f"https://api.openopus.org/dyn/work/random", params=params).json()
         keys["works"] = [work["title"] for work in results["works"]][:10]
         
-        
         return final
+
+
+class WikiInfo(Context):
+    
+    def fetch(self, data: dict) -> True:
+        query = self.determine_query(data)
+        keys = {}
+        final = {
+            self.name: keys,
+        }
+        
+        if not query or not data:
+            return final
+        
+        keys["content"] = WikipediaScraper(query).get_sanitized_wiki()
+        return final
+    
+    @abc.abstractmethod
+    def determine_query(self, data: dict) -> str:
+        pass
+    
+    @property
+    @abc.abstractmethod
+    def name(self) -> str:
+        pass
+
+
+class ComposerWikiInfo(WikiInfo):
+    
+    def determine_query(self, data: dict) -> str:
+        return data["classical_info"]["composer"]
+    
+    @property
+    def name(self) -> str:
+        return "composer_wiki_info"
+
+
+class WorkWikiInfo(WikiInfo):
+    
+    def determine_query(self, data: dict) -> str:
+        composer = data["classical_info"]["composer"]
+        work = data["classical_info"]["work"]
+        return f"{composer} {work}"
+
+    @property
+    def name(self) -> str:
+        return "work_wiki_info"
