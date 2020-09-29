@@ -29,7 +29,10 @@ class EntryPile(urwid.Pile):
 
 class Entry:
     
+    
+    
     def __init__(self):
+        
         self.vm: EntryVM = EntryVM()
         self.main_view: BaseSubView = self.vm.main_view
         self.sub_views: List[BaseSubView] = self.vm.sub_views
@@ -48,6 +51,9 @@ class Entry:
         self.__add_subview_frame(self.sub_view_frame, 30, "More Information")
         
         self.__init__button_bar()
+        self.__write_pipe = TerminalWrapper.get_pipe(self.update_views)
+        
+        TerminalWrapper.run_task(self.vm.refresh_loop, self.__write_pipe)
     
     def __add_to_top_container(self, widget: urwid.Widget) -> None:
         self.top_container.contents.append(
@@ -94,7 +100,7 @@ class Entry:
         refresh_btn = self.__create_button("Refresh", self.refresh_views, key='r')
         grid_flow = urwid.GridFlow([previous_btn, next_btn, static_btn, refresh_btn], 20, 1, 1, 'center')
         self.__add_to_top_container(grid_flow)
-        
+    
     @property
     def widget(self):
         return self.__widget
@@ -116,12 +122,11 @@ class Entry:
             TerminalWrapper.flash_message(data, clear=False)
     
     def refresh_views(self, button):
-        TerminalWrapper.run_task(self.vm.refresh_data, self.update_views)
+        TerminalWrapper.run_task(self.vm.refresh_data, self.__write_pipe)
     
     def change_sub_view(self, button: urwid.Button, index: int) -> None:
         self.sub_view_frame.contents['body'] = (self.sub_views[index].widget, None)
         self.current_sub_view = index
-    
     
     def next(self, button) -> None:
         TerminalWrapper.flash_message("Called Next")
@@ -130,5 +135,9 @@ class Entry:
         TerminalWrapper.flash_message("Called previous")
     
     def static(self, button) -> None:
-        TerminalWrapper.flash_message("Called static")
+        automatic = self.vm.toggle_automatic_refresh()
+        if automatic:
+            self.refresh_views(button)
+        else:
+            TerminalWrapper.flash_message("Static Mode", clear=False)
         

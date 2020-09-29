@@ -16,8 +16,8 @@ class EntryVM:
         self.__matching_song_data = False
         self.__refresh_lock: Lock = Lock()
         self.__auto_lock: Lock = Lock()
-        self.__automatic_refresh: bool = False
-        self.__refresh_loop_running: bool = False
+        self.__automatic_refresh: bool = True
+        self.__refresh_killed: bool = False
     
     @property
     def current_song_data(self) -> dict:
@@ -39,31 +39,35 @@ class EntryVM:
     def main_view(self) -> BaseSubView:
         return ClassicalInfoSubView()
     
-    def toggle_automatic_refresh(self, write_func: Callable) -> None:
-        
+    def toggle_automatic_refresh(self) -> bool:
         self.__auto_lock.acquire()
         self.__automatic_refresh = not self.__automatic_refresh
-        if self.__automatic_refresh and not self.__refresh_loop_running:
-            self.__refresh_loop_running = True
-            thread: Thread = Thread(target=self.refresh_loop, args=(write_func,))
-            thread.start()
-            
+        final = self.__automatic_refresh
+        self.__auto_lock.release()
+        return final
+    
+    def kill_refresh(self):
+        self.__auto_lock.acquire()
+        self.__refresh_killed = True
         self.__auto_lock.release()
     
     def refresh_loop(self, write_func: Callable) -> None:
         
         self.__auto_lock.acquire()
-        while self.__automatic_refresh:
+        
+        while not self.__refresh_killed:
             
+            refresh = self.__automatic_refresh
             self.__auto_lock.release()
+            if refresh:
+                self.refresh_data(write_func)
             
-            self.refresh_data(write_func)
             time.sleep(30)
             self.__auto_lock.acquire()
-        self.__refresh_loop_running = False
-        self.__refresh_lock.release()
+        
+        self.__auto_lock.release()
     
-    def refresh_data(self, write_func: Callable) -> None:
+    def refresh_data(self, write_func: Callable) -> bool:
         self.__refresh_lock.acquire()
         
         self.__previous_song_data = self.__current_song_data
@@ -82,3 +86,4 @@ class EntryVM:
         
         write_func("Updated.")
         self.__refresh_lock.release()
+        return False
