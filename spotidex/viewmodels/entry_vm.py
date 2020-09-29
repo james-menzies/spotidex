@@ -56,21 +56,24 @@ class EntryVM:
         self.prev_or_next(write_func)
     
     def previous(self, write_func: Callable):
-        self.prev_or_next(write_func, next=False)
+        self.prev_or_next(write_func, get_next=False)
     
-    def prev_or_next(self, write_func: Callable, next: bool = True):
+    def prev_or_next(self, write_func: Callable, get_next: bool = True):
+        
         self.__auto_lock.acquire()
         self.__automatic_refresh = False
         self.__auto_lock.release()
         
         self.__refresh_lock.acquire()
-        if next:
+        if get_next:
             message, track = Session.get_instance().get_next()
         else:
             message, track = Session.get_instance().get_previous()
         if track:
-            self.__previous_song_data = self.__current_song_data
             self.__matching_song_data = False
+            self.__current_song_data = track.information
+        
+        self.__refresh_lock.release()
         write_func(message)
     
     def refresh_loop(self, write_func: Callable) -> None:
@@ -79,10 +82,11 @@ class EntryVM:
         
         while not self.__refresh_killed:
             
-            refresh = self.__automatic_refresh
-            self.__auto_lock.release()
-            if refresh:
+            if self.__automatic_refresh:
+                self.__auto_lock.release()
                 self.refresh_data(write_func)
+            else:
+                self.__auto_lock.release()
             
             time.sleep(30)
             self.__auto_lock.acquire()

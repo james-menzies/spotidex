@@ -127,10 +127,10 @@ class Entry:
         self.current_sub_view = index
     
     def next(self, button) -> None:
-        TerminalWrapper.flash_message("Called Next")
+        TerminalWrapper.run_task(self.vm.next, self.__write_pipe)
     
     def previous(self, button) -> None:
-        TerminalWrapper.flash_message("Called previous")
+        TerminalWrapper.run_task(self.vm.previous, self.__write_pipe)
     
     def static(self, button) -> None:
         automatic = self.vm.toggle_automatic_refresh()

@@ -25,7 +25,6 @@ class LoginScreenVM:
             return
         
         try:
-            sys.stderr = open(os.devnull, "w")
             if self.__auth.establish_connection():
                 self.success = True
                 write_func(f"Welcome, {self.__auth.current_user}!")
@@ -36,5 +35,4 @@ class LoginScreenVM:
             self.success = False
             write_func("An unknown login error occurred.")
         finally:
-            sys.stderr = sys.__stderr__
             self.lock.release()

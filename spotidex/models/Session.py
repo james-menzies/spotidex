@@ -32,9 +32,11 @@ class Session:
         
         if 0 <= index < len(self.__tracks):
             self.__index = index
-            return f"At track{index} of {len(self.__tracks)}", self.__tracks[index]
+            return f"At track {index + 1} of {len(self.__tracks)}", self.__tracks[index]
         elif index < 0:
-            return "Reached start of playback", None
+            return "Reached start of playback session", None
+        else:
+            return "Reached most recent track.", None
     
     def add_track(self, track: SpotifyTrack) -> None:
         
