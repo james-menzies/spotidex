@@ -10,7 +10,7 @@ song_info = refresh().information
 
 
 for item, value in song_info.items():
-    
+
     print(item)
     print("----------")
     for attr in song_info[item].items():

@@ -17,7 +17,8 @@ class BasicInfo:
         raw_data = data["raw_data"]
         keys = {}
         final = {"basic_info": keys}
-        if not raw_data:
+        
+        if not data["raw_data"]:
             return final
         
         keys["id"] = raw_data["item"]["id"]

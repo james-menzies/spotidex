@@ -77,6 +77,7 @@ class EntryVM:
         write_func("Refreshing...")
         
         self.__current_song_data = self.__callback().information
+
         if not self.current_song_data or not self.previous_song_data:
             self.__matching_song_data = self.current_song_data == self.previous_song_data
         else:
