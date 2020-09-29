@@ -1,37 +1,44 @@
+from typing import Optional, List, Dict
+
 import googlesearch
-from bs4 import BeautifulSoup, NavigableString
+import requests
+
+from bs4 import BeautifulSoup
 
 
-query = "Beethoven"
-target_page = None
-
-# for item in googlesearch.search(query, stop=5):
-#     if "wikipedia" in item:
-#         target_page = item
-#         break
-#
-# print(target_page)
-
-def strip_tags(html):
-    soup = BeautifulSoup(html)
-
-    # for string in soup.strings:
-    #     print(str(string), end="")
-    #
-    paragraphs = soup.find_all(name="p", recursive=False)
-    for paragraph in paragraphs:
-        for string in paragraph.strings:
-            print(str(string), end='')
-        print("______")
+class WikipediaScraper:
     
-html = """<p><b>Ludwig van Beethoven</b> (<span class="rt-commentedText nowrap"><span class="IPA nopopups noexcerpt"><a href="/wiki/Help:IPA/English" title="Help:IPA/English">/<span style="border-bottom:1px dotted"><span title="/ˈ/: primary stress follows">ˈ</span><span title="&#39;l&#39; in &#39;lie&#39;">l</span><span title="/ʊ/: &#39;u&#39; in &#39;push&#39;">ʊ</span><span title="&#39;d&#39; in &#39;dye&#39;">d</span><span title="&#39;v&#39; in &#39;vie&#39;">v</span><span title="/ɪ/: &#39;i&#39; in &#39;kit&#39;">ɪ</span><span title="/ɡ/: &#39;g&#39; in &#39;guy&#39;">ɡ</span></span><span class="wrap"> </span><span style="border-bottom:1px dotted"><span title="&#39;v&#39; in &#39;vie&#39;">v</span><span title="/æ/: &#39;a&#39; in &#39;bad&#39;">æ</span><span title="&#39;n&#39; in &#39;nigh&#39;">n</span></span><span class="wrap"> </span><span style="border-bottom:1px dotted"><span title="/ˈ/: primary stress follows">ˈ</span><span title="&#39;b&#39; in &#39;buy&#39;">b</span><span title="/eɪ/: &#39;a&#39; in &#39;face&#39;">eɪ</span><span title="&#39;t&#39; in &#39;tie&#39;">t</span><span title="/oʊ/: &#39;o&#39; in &#39;code&#39;">oʊ</span><span title="&#39;v&#39; in &#39;vie&#39;">v</span><span title="/ən/: &#39;on&#39; in &#39;button&#39;">ən</span></span>/</a></span>&#32;<span class="nowrap" style="font-size:85%">(<span class="unicode haudio"><span class="fn"><span style="white-space:nowrap;margin-right:.25em;"><a href="/wiki/File:En-LudwigVanBeethoven.ogg" title="About this sound"><img alt="About this sound" src="//upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Loudspeaker.svg/11px-Loudspeaker.svg.png" decoding="async" width="11" height="11" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Loudspeaker.svg/17px-Loudspeaker.svg.png 1.5x, //upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Loudspeaker.svg/22px-Loudspeaker.svg.png 2x" data-file-width="20" data-file-height="20" /></a></span><a href="//upload.wikimedia.org/wikipedia/commons/c/c7/En-LudwigVanBeethoven.ogg" class="internal" title="En-LudwigVanBeethoven.ogg">listen</a></span></span>)</span></span>; <small>German:&#32;</small><span title="Representation in the International Phonetic Alphabet (IPA)" class="IPA"><a href="/wiki/Help:IPA/Standard_German" title="Help:IPA/Standard German">[ˈluːtvɪç fan ˈbeːtʰoːfn̩]</a></span>&#32;<span class="nowrap" style="font-size:85%">(<span class="unicode haudio"><span class="fn"><span style="white-space:nowrap;margin-right:.25em;"><a href="/wiki/File:De-Ludwig_van_Beethoven.ogg" title="About this sound"><img alt="About this sound" src="//upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Loudspeaker.svg/11px-Loudspeaker.svg.png" decoding="async" width="11" height="11" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Loudspeaker.svg/17px-Loudspeaker.svg.png 1.5x, //upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Loudspeaker.svg/22px-Loudspeaker.svg.png 2x" data-file-width="20" data-file-height="20" /></a></span><a href="//upload.wikimedia.org/wikipedia/commons/a/ae/De-Ludwig_van_Beethoven.ogg" class="internal" title="De-Ludwig van Beethoven.ogg">listen</a></span></span>)</span>; baptised 17 December 1770&#160;&#8211;&#32;26 March 1827) was a German <a href="/wiki/Composer" title="Composer">composer</a> and pianist whose music ranks amongst the most performed of the <a href="/wiki/Classical_music" title="Classical music">classical music</a> repertoire; he remains one of the most admired composers in the history of Western music. His works span the transition from the <a href="/wiki/Classical_period_(music)" title="Classical period (music)">classical period</a> to the <a href="/wiki/Romantic_music" title="Romantic music">romantic</a> era in classical music. His career has conventionally been divided into early, middle, and late periods. The "early" period, during which he forged his craft, is typically considered to have lasted until 1802. His "middle" period, sometimes characterized as "heroic", showed an individual development from the "classical" styles of <a href="/wiki/Joseph_Haydn" title="Joseph Haydn">Joseph Haydn</a> and <a href="/wiki/Wolfgang_Amadeus_Mozart" title="Wolfgang Amadeus Mozart">Wolfgang Amadeus Mozart</a>, typically covers the years 1802 to 1812, during which he increasingly suffered from deafness. In the "late" period from 1812 to his death in 1827, he extended his innovations in musical form and expression.
-</p><p>Born in <a href="/wiki/Bonn" title="Bonn">Bonn</a>, Beethoven's musical talent was obvious at an early age, and he was initially harshly and intensively taught by his father <a href="/wiki/Johann_van_Beethoven" title="Johann van Beethoven">Johann van Beethoven</a>. Beethoven was later taught by the composer and conductor <a href="/wiki/Christian_Gottlob_Neefe" title="Christian Gottlob Neefe">Christian Gottlob Neefe</a>, under whose tutelage he published his first work, a set of keyboard variations, in 1783. He found relief from a dysfunctional home life with the family of <a href="/wiki/Helene_von_Breuning" title="Helene von Breuning">Helene von Breuning</a>, whose children he loved, befriended, and taught piano. At age 21, he moved to <a href="/wiki/Vienna" title="Vienna">Vienna</a>, which subsequently became his base, and studied composition with Haydn. Beethoven then gained a reputation as a virtuoso pianist, and he was soon courted by <a href="/wiki/Karl_Alois,_Prince_Lichnowsky" title="Karl Alois, Prince Lichnowsky">Karl Alois, Prince Lichnowsky</a> for compositions, which resulted in his three <a href="/wiki/Piano_Trios,_Op._1_(Beethoven)" title="Piano Trios, Op. 1 (Beethoven)">Opus 1</a> <a href="/wiki/Piano_trio" title="Piano trio">piano trios</a> (the earliest works to which he accorded an <a href="/wiki/Opus_number" title="Opus number">opus number</a>) in 1795.
-</p><p>His first major orchestral work, the <a href="/wiki/Symphony_No._1_(Beethoven)" title="Symphony No. 1 (Beethoven)">First Symphony</a>, appeared in 1800, and his <a href="/wiki/String_Quartets_Nos._1%E2%80%936,_Op._18_(Beethoven)" title="String Quartets Nos. 1–6, Op. 18 (Beethoven)">first set of string quartets</a> was published in 1801. During this period, his hearing began to deteriorate, but he continued to conduct, premiering his <a href="/wiki/Symphony_No._3_(Beethoven)" title="Symphony No. 3 (Beethoven)">Third</a> and <a href="/wiki/Symphony_No._5_(Beethoven)" title="Symphony No. 5 (Beethoven)">Fifth</a> <a href="/wiki/Symphony" title="Symphony">Symphonies</a> in 1804 and 1808, respectively. His <a href="/wiki/Violin_Concerto_(Beethoven)" title="Violin Concerto (Beethoven)">Violin Concerto</a> appeared in 1806. His <a href="/wiki/Piano_Concerto_No._5_(Beethoven)" title="Piano Concerto No. 5 (Beethoven)">last piano concerto</a> (No. 5, Op. 73, known as the 'Emperor'), dedicated to his frequent patron <a href="/wiki/Archduke_Rudolf_of_Austria" title="Archduke Rudolf of Austria">Archduke Rudolf of Austria</a>, was premiered in 1810, but not with Beethoven as soloist. He was almost completely deaf by 1814, and he then gave up performing and appearing in public. He described his problems with health and his unfulfilled personal life in two letters, his "<a href="/wiki/Heiligenstadt_Testament" title="Heiligenstadt Testament">Heiligenstadt Testament</a>" (1802) to his brothers and his unsent love letter to an unknown "<a href="/wiki/Immortal_Beloved" title="Immortal Beloved">Immortal Beloved</a>" (1812).
-</p><p>In the years from 1810, increasingly less socially involved, Beethoven composed many of his most admired works including his later symphonies and his mature <a href="/wiki/Chamber_music" title="Chamber music">chamber music</a> and <a href="/wiki/Piano_sonata" title="Piano sonata">piano sonatas</a>. His only opera, <i><a href="/wiki/Fidelio" title="Fidelio">Fidelio</a></i>, which had been first performed in 1805, was revised to its final version in 1814. He composed his <i><a href="/wiki/Missa_solemnis_(Beethoven)" title="Missa solemnis (Beethoven)">Missa Solemnis</a></i> in the years 1819–1823, and his final, <a href="/wiki/Symphony_No._9_(Beethoven)" title="Symphony No. 9 (Beethoven)">Ninth</a>, Symphony, one of the first examples of a <a href="/wiki/Choral_symphony" title="Choral symphony">choral symphony</a>, in 1822–1824. Written in his last years, his <a href="/wiki/Late_string_quartets_(Beethoven)" title="Late string quartets (Beethoven)">late string quartets</a> of 1825–26 are amongst his final achievements. After some months of bedridden illness he <a href="/wiki/Death_of_Ludwig_van_Beethoven" title="Death of Ludwig van Beethoven">died in 1827</a>. Beethoven's works remain mainstays of the classical music repertoire.
-</p>"""
-
-# invalid_tags = ['span', 'a', 'i', 'b']
-
-strip_tags(html)
-
-
+    def __init__(self, query: str):
+        self.query = query
+    
+    def get_sanitized_wiki(self) -> List[Dict[str, str]]:
+        pass
+        html = requests.get(self.get_target_page(self.query)).text
+        
+        soup = BeautifulSoup(html, 'html.parser')
+        soup = soup.find(name="div", attrs={"id": "mw-content-text"})
+        soup = soup.findAll(name=["p", "h2", "h3", "h4"])
+        
+        sanitized_content = []
+        for tag in soup:
+            if tag.name == 'p':
+                raw_string = "".join(tag.strings).strip()
+                if raw_string and raw_string != '\n':
+                    sanitized_content.append({"type": "paragraph", "content": raw_string})
+            else:
+                raw_string = "".join(tag.strings).strip()
+                sanitized_string = raw_string.replace("[edit]", "")
+                # omit notes and references section
+                if [word for word in ["Notes", "References"] if word in sanitized_string]:
+                    break
+                sanitized_content.append({"type": "heading", "content": sanitized_string})
+        return sanitized_content
+    
+    @staticmethod
+    def get_target_page(query: str) -> Optional[str]:
+        # takes a query string and returns the associated wiki page.
+        for item in googlesearch.search(query, stop=5):
+            if "wikipedia" in item:
+                return item
+        
+        return None
