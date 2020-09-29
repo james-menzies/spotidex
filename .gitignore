@@ -4,3 +4,4 @@ __pycache__
 .cache
 main.py
 manual_test_cache
+.idea

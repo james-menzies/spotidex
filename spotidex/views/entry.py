@@ -48,7 +48,6 @@ class Entry:
         self.__add_subview_frame(self.sub_view_frame, 30, "More Information")
         
         self.__init__button_bar()
-        self.vm.toggle_automatic_refresh(
     
     def __add_to_top_container(self, widget: urwid.Widget) -> None:
         self.top_container.contents.append(
