@@ -29,6 +29,8 @@ class WikipediaScraper:
                 raw_string = "".join(tag.strings).strip()
                 sanitized_string = raw_string.replace("[edit]", "")
                 # omit notes and references section
+                if "Contents" in sanitized_string:
+                    continue
                 if [word for word in ["Notes", "References"] if word in sanitized_string]:
                     break
                 sanitized_content.append({"type": "heading", "content": sanitized_string})

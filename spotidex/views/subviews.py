@@ -3,6 +3,8 @@ from typing import List, Optional, Dict
 import urwid
 from abc import abstractmethod
 
+from .scroll import Scrollable
+
 
 def generate_column_view(*columns: List[str]) -> urwid.Widget:
     col_body = []
@@ -128,22 +130,87 @@ class RecommendedSubView(BaseSubView):
     @property
     def widget(self):
         return self.__widget
-
+    
     def update_widget(self, data: Optional[dict] = None) -> urwid.Widget:
         
         data1 = self._get_data_section(data, "recommended_info", ["works"])
         data2 = self._get_data_section(data, "composer_info", ["name"])
-        if not data1 or data2:
+        if not data1 or not data2:
             self.__widget = self._placeholder
             return self.__widget
         
-        works = data["works"]
+        works = data1["works"]
         if not isinstance(works, list):
             self.__widget = self._placeholder
             return self.__widget
-        title = urwid.Text(f"Other Works by data", align='center')
+        title = urwid.Text(f"Other Works by {data2['name']}", align='center')
         div = urwid.Divider(div_char='-', top=1, bottom=1)
         labels = [urwid.Text(str(work), align='center') for work in works]
         pile = urwid.Pile([title, div, *labels])
         self.__widget = urwid.Filler(pile)
         return self.__widget
+
+
+class WikiSubview(BaseSubView):
+    def __init__(self, title):
+        super().__init__(title)
+        self.__widget = self._placeholder
+    
+    @property
+    def widget(self):
+        return self.__widget
+    
+    def update_widget(self, data: Optional[Dict[str, Dict]] = None) -> urwid.Widget:
+        
+        data = self.get_wiki_contents(data)
+        
+        title = urwid.Text(self.title)
+        div_title = urwid.Divider(div_char='-', top=1, bottom=1)
+        div_paragraph = urwid.Divider()
+        body = [title, div_title]
+        
+        for item in data:
+            
+            if item["type"] == 'heading':
+                text = urwid.Text(item["content"])
+                body += [div_title, text, div_title]
+            else:
+                text = urwid.Text(item["content"])
+                body += [text, div_paragraph]
+        
+        pile = urwid.Pile(body)
+        self.__widget = Scrollable(pile)
+        return self.__widget
+    
+    @abstractmethod
+    def get_introduction(self, data: Optional[Dict[str, Dict]]) -> Optional[urwid.Widget]:
+        pass
+    
+    @abstractmethod
+    def get_wiki_contents(self, data: Optional[Dict[str, Dict]]) -> List[Dict[str, str]]:
+        pass
+
+
+class ComposerWikiSubView(WikiSubview):
+    
+    def __init__(self):
+        super().__init__("About the Composer")
+    
+    def get_introduction(self, data: Optional[Dict[str, Dict]]) -> Optional[urwid.Widget]:
+        return None
+
+    def get_wiki_contents(self, data: Optional[Dict[str, Dict]]) -> List[Dict[str, str]]:
+        return data["composer_wiki_info"]["content"]
+
+
+class WorkWikiSubView(WikiSubview):
+    
+    def __init__(self):
+        super().__init__("About this Work")
+    
+    def get_introduction(self, data: Optional[Dict[str, Dict]]) -> Optional[urwid.Widget]:
+        return None
+    
+    def get_wiki_contents(self, data: Optional[Dict[str, Dict]]) -> List[Dict[str, str]]:
+        return data["work_wiki_info"]["content"]
+
