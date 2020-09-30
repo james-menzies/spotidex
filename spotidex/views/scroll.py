@@ -34,7 +34,6 @@ class Scrollable(urwid.WidgetDecoration):
     
     def __init__(self, widget):
         """Box widget that makes a fixed or flow widget vertically scrollable
-        TODO: Focusable widgets are handled, including switching focus, but
         possibly not intuitively, depending on the arrangement of widgets.  When
         switching focus to a widget that is ouside of the visible part of the
         original widget, the canvas scrolls up/down to the focused widget.  It
@@ -109,7 +108,6 @@ class Scrollable(urwid.WidgetDecoration):
             else:
                 # Original widget does not have a cursor, but may be selectable
                 
-                # FIXME: Using ow.selectable() is bad because the original
                 # widget may be selectable because it's a container widget with
                 # a key-grabbing widget that is scrolled out of view.
                 # ow.selectable() returns True anyway because it doesn't know

@@ -9,7 +9,6 @@ class LoginScreenVM:
     def __init__(self):
         self.__auth = SpotifyAuth.get_instance()
         self.success = False
-        self.message = ""
         self.lock = Lock()
     
     def login(self, write_func):

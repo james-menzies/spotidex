@@ -1,5 +1,5 @@
 import os
-from typing import Protocol, Callable, Any
+from typing import Protocol, Callable, Any, List, Tuple
 from threading import Thread, RLock
 import urwid
 
@@ -11,21 +11,18 @@ class View(Protocol):
 
 
 class TerminalWrapper:
-    __palette = {
+    __palette: List[Tuple[str]] = [
         ('bg', 'dark green', 'black',),
         ('reversed', 'black', 'white',),
-    }
+    ]
     __placeholder = urwid.SolidFill()
     __status = urwid.Text(" ", align='left')
     __footer = urwid.Text(" ", align='center')
     __frame = urwid.Frame(__placeholder, footer=__footer)
+    __open_pipes: List[int] = []
     
-    __loop = urwid.MainLoop(urwid.AttrMap(__frame, 'bg', focus_map='reversed'), palette=__palette)
-    
-    # clean_thread = Thread(target=_clean_subroutine, args=(__loop,))
-    # clean_thread.setDaemon(True)
-    # clean_thread.start()
-    #
+    __loop = urwid.MainLoop(urwid.AttrMap(__frame, 'bg'), palette=__palette)
+
     @classmethod
     def start_application(cls, initial_screen: View) -> None:
         cls.__frame.contents["body"] = (initial_screen.widget, None)
@@ -53,7 +50,10 @@ class TerminalWrapper:
     @classmethod
     def get_pipe(cls, update: Callable) -> int:
         
-        return cls.__loop.watch_pipe(update)
+        fd = cls.__loop.watch_pipe(update)
+        cls.__open_pipes.append(fd)
+        return fd
+        
     
     @classmethod
     def remove_pipe(cls, fd: int) -> str:

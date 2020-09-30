@@ -7,6 +7,11 @@ from .scroll import Scrollable
 
 
 def generate_column_view(*columns: List[str]) -> urwid.Widget:
+    """
+    Utility method to help generate a two column view of keys and pairs.
+    The Raw Info and Main View use this function to render their respective
+    widgets.
+    """
     col_body = []
     
     for column in columns:
@@ -20,6 +25,8 @@ def generate_column_view(*columns: List[str]) -> urwid.Widget:
 class BaseSubView:
     
     def __init__(self, title: str = "Generic View", placeholder: str = "No information available"):
+        # the default for SubViews to use when data is invalid or does not
+        # satisfy the required information.
         self._placeholder = urwid.Filler(urwid.Text(placeholder, align='center'))
         self.__title = title
     

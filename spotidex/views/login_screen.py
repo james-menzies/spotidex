@@ -26,7 +26,7 @@ class LoginScreen:
         return menu.build()
     
     def login_update(self, data):
-        TerminalWrapper.flash_message(data)
+        # TerminalWrapper.flash_message(data)
         
         if self.__vm.success:
             TerminalWrapper.change_screen(MainMenu())
