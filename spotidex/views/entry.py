@@ -22,9 +22,7 @@ class EntryPile(urwid.Pile):
     
     def register_button(self, btn: urwid.Button, key: str) -> None:
         btn.set_label(f"{btn.label} ({key.upper()})")
-        callback = lambda: btn.keypress((15,), 'enter')
-        self.callbacks[key] = callback
-        self.callbacks[key.upper()] = callback
+        self.callbacks[key] = self.callbacks[key.upper()] = lambda: btn.keypress((15,), 'enter')
 
 
 class Entry:
@@ -49,9 +47,7 @@ class Entry:
         self.__add_subview_frame(self.sub_view_frame, 30, "More Information")
         
         self.__init__button_bar()
-        self.__write_pipe = TerminalWrapper.get_pipe(self.update_views)
-        
-        TerminalWrapper.run_task(self.vm.refresh_loop, self.__write_pipe)
+        self.__write_pipe = TerminalWrapper.get_pipe(self.__update_views)
     
     def __add_to_top_container(self, widget: urwid.Widget) -> None:
         self.top_container.contents.append(
@@ -72,10 +68,8 @@ class Entry:
         return urwid.LineBox(button)
     
     def __init__header(self):
-        def go_back(button: urwid.Button) -> None:
-            TerminalWrapper.change_screen(main_menu.MainMenu())
         
-        back = self.__create_button("Go back", go_back, key='b')
+        back = self.__create_button("Go back", self.go_back, key='b')
         back_padding: urwid.Padding = urwid.Padding(back, align='left', left=2)
         title: urwid.Text = urwid.Text("Spotidex", align='center')
         title_padding = urwid.LineBox(urwid.BoxAdapter(urwid.Filler(title), 3))
@@ -84,7 +78,7 @@ class Entry:
     def __init__subview_selection(self):
         buttons = []
         for index, view in enumerate(self.sub_views):
-            buttons.append(self.__create_button(view.title, self.change_sub_view, user_data=index))
+            buttons.append(self.__create_button(view.title, self.__change_sub_view, user_data=index))
         walker = urwid.SimpleFocusListWalker(buttons)
         
         grid_flow = urwid.GridFlow(walker, cell_width=25, h_sep=1, v_sep=1, align='center')
@@ -99,11 +93,14 @@ class Entry:
         grid_flow = urwid.GridFlow([previous_btn, next_btn, static_btn, refresh_btn], 20, 1, 1, 'center')
         self.__add_to_top_container(grid_flow)
     
-    @property
-    def widget(self):
-        return self.__widget
+    def __change_sub_view(self, button: urwid.Button, index: int) -> None:
+        self.sub_view_frame.contents['body'] = (self.sub_views[index].widget, None)
+        self.current_sub_view = index
     
-    def update_views(self, data):
+    def __update_views(self, data):
+        """
+        Refresh method that gets called when self.__write_pipe is written to by the VM.
+        """
         
         if not self.vm.matching_song_data and self.vm.current_song_data:
             self.main_view_frame.contents["body"] = (
@@ -119,12 +116,17 @@ class Entry:
         else:
             TerminalWrapper.flash_message(data, clear=False)
     
+    @property
+    def widget(self):
+        return self.__widget
+    
     def refresh_views(self, button):
         TerminalWrapper.run_task(self.vm.refresh_data, self.__write_pipe)
     
-    def change_sub_view(self, button: urwid.Button, index: int) -> None:
-        self.sub_view_frame.contents['body'] = (self.sub_views[index].widget, None)
-        self.current_sub_view = index
+    def go_back(self, button: urwid.Button) -> None:
+        self.vm.kill_refresh()
+        TerminalWrapper.remove_pipe(self.__write_pipe)
+        TerminalWrapper.change_screen(main_menu.MainMenu())
     
     def next(self, button) -> None:
         TerminalWrapper.run_task(self.vm.next, self.__write_pipe)

@@ -17,7 +17,7 @@ class Session:
             raise ValueError("There can only be one instance of Session")
         
         self.__tracks: List[SpotifyTrack] = []
-        self.__index = None
+        self.__index = 0
     
     def get_previous(self) -> Tuple[str, Optional[SpotifyTrack]]:
         return self.__retrieve_track(self.__index - 1)

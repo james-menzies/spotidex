@@ -31,8 +31,8 @@ class MainMenu:
     
  
     def begin(self, button):
-        Entry().getInstance().begin_session()
-        TerminalWrapper.change_screen(Entry().get_instance())
+
+        TerminalWrapper.change_screen(Entry())
         
     def logout(self, button):
         TerminalWrapper.change_screen(login_screen.LoginScreen())

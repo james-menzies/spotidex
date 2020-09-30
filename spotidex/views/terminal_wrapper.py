@@ -50,10 +50,8 @@ class TerminalWrapper:
     @classmethod
     def get_pipe(cls, update: Callable) -> int:
         
-        fd = cls.__loop.watch_pipe(update)
-        cls.__open_pipes.append(fd)
-        return fd
-        
+        return cls.__loop.watch_pipe(update)
+
     
     @classmethod
     def remove_pipe(cls, fd: int) -> str:
