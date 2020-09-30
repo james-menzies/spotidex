@@ -1,4 +1,6 @@
 import abc
+import threading
+from typing import Optional, Dict
 
 import requests
 from .wikipediaScraper import WikipediaScraper
@@ -7,24 +9,37 @@ from .wikipediaScraper import WikipediaScraper
 class Context:
     
     @abc.abstractmethod
-    def fetch(self, data: dict):
+    def fetch(self, data: dict) -> Optional[Dict[str, dict]]:
+        """
+        Subclasses of this class are designed to abstract a
+        single piece of contextual information about a particular
+        track.
+        
+        It will return a dict object containing a single key
+        and a dict value. It is intended that the passed
+        in value will be updated with the return value.
+        """
         pass
 
 
 class BasicInfo(Context):
     
-    def fetch(self, data: dict):
+    def fetch(self, data: dict) -> Optional[Dict[str, dict]]:
+        if "raw_data" not in data:
+            return
+        
         raw_data = data["raw_data"]
+        
         keys = {}
         final = {"basic_info": keys}
-        
-        if not data["raw_data"]:
-            return final
-        
-        keys["id"] = raw_data["item"]["id"]
-        keys["track"] = raw_data["item"]["name"]
-        keys["artists"] = [artist["name"] for artist in raw_data["item"]["artists"]]
-        keys["album"] = raw_data["item"]["album"]["name"]
+        try:
+            keys["id"] = raw_data["item"]["id"]
+            keys["track"] = raw_data["item"]["name"]
+            keys["artists"] = [artist["name"] for artist in raw_data["item"]["artists"]]
+            keys["album"] = raw_data["item"]["album"]["name"]
+        except (KeyError, TypeError):
+            # invalid data passed in
+            return
         
         return final
 
@@ -32,18 +47,23 @@ class BasicInfo(Context):
 class ComposerInfo(Context):
     _cache = {}
     
-    def fetch(self, data: dict):
-        basic_info = data["basic_info"]
-        if not basic_info:
+    def fetch(self, data: dict) -> Optional[Dict[str, dict]]:
+        
+        if "basic_info" not in data:
             return
         
-        composer = basic_info["artists"][0]
-        if composer in self._cache:
-            return {"composer_info": self._cache[composer]}
-        
-        composer_info = self.retrieve_composer_info(composer)
-        self._cache[composer] = composer_info
-        return {"composer_info": composer_info}
+        basic_info = data["basic_info"]
+        try:
+            composer = basic_info["artists"][0]
+            if composer in self._cache:
+                return {"composer_info": self._cache[composer]}
+            
+            composer_info = self.retrieve_composer_info(composer)
+            self._cache[composer] = composer_info
+            return {"composer_info": composer_info}
+        except (KeyError, ValueError):
+            # invalid data
+            return
     
     @staticmethod
     def retrieve_composer_info(name: str) -> dict:
@@ -57,14 +77,13 @@ class ComposerInfo(Context):
 
 class ClassicalInfo(Context):
     
-    def fetch(self, data: dict):
-        if not data["basic_info"]:
+    def fetch(self, data: dict) -> Optional[Dict[str, dict]]:
+        required_keys = ["basic_info", "composer_info"]
+        if [key for key in required_keys if key not in data]:
             return
         
         keys = {}
         final = {"classical_info": keys}
-        if not data["composer_info"]:
-            return final
         
         basic_info = data["basic_info"]
         composer = basic_info["artists"][0]
@@ -102,7 +121,7 @@ class ClassicalInfo(Context):
 
 class RecommendedInfo(Context):
     
-    def fetch(self, data: dict) -> True:
+    def fetch(self, data: dict) -> Optional[Dict[str, dict]]:
         keys = {}
         final = {"recommended_info": keys}
         
@@ -117,18 +136,29 @@ class RecommendedInfo(Context):
 
 
 class WikiInfo(Context):
+    _cache = {}
+    _lock = threading.Lock()
     
-    def fetch(self, data: dict) -> True:
-        query = self.determine_query(data)
+    def fetch(self, data: dict) -> Optional[Dict[str, dict]]:
+        
+        try:
+            query = self.determine_query(data)
+        except KeyError:
+            return None
+        
         keys = {}
         final = {
             self.name: keys,
         }
         
-        if not query or not data:
-            return final
+        # given that this cache is accessed asynchronously, it's important to lock it.
+        self._lock.acquire()
+        if query in self._cache:
+            keys["content"] = self._cache[query]
+        else:
+            self._cache[query] = keys["content"] = WikipediaScraper(query).get_sanitized_wiki()
+        self._lock.release()
         
-        keys["content"] = WikipediaScraper(query).get_sanitized_wiki()
         return final
     
     @abc.abstractmethod
@@ -157,7 +187,7 @@ class WorkWikiInfo(WikiInfo):
         composer = data["classical_info"]["composer"]
         work = data["classical_info"]["work"]
         return f"{composer} {work}"
-
+    
     @property
     def name(self) -> str:
         return "work_wiki_info"

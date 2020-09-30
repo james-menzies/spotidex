@@ -5,6 +5,7 @@ from .context import *
 
 
 class CountDownLatch(object):
+    # A simple Java-like CountDownLatch credit to madhur25.
     def __init__(self, count=1):
         self.count = count
         self.lock = threading.Condition()
@@ -24,8 +25,10 @@ class CountDownLatch(object):
 
 
 class SpotifyTrack:
+    basic_contexts = [BasicInfo, ComposerInfo, ClassicalInfo]
+    dependency_contexts = [RecommendedInfo, ComposerWikiInfo, WorkWikiInfo]
     
-    def __init__(self, raw_data: str, contexts: Optional[List[Context]] = None):
+    def __init__(self, raw_data: str):
         
         if not raw_data:
             self.__information = None
@@ -35,11 +38,13 @@ class SpotifyTrack:
                 "raw_data": raw_data
             }
         
-        basic_contexts = [BasicInfo, ComposerInfo, ClassicalInfo]
-        dependency_contexts = [RecommendedInfo, ComposerWikiInfo, WorkWikiInfo]
         lock = threading.Lock()
         
-        def get_context(context, latch: Optional[CountDownLatch] = None):
+        def get_context(context, latch: Optional[CountDownLatch] = None) -> None:
+            """
+            Processes a context and updates information in a thread-safe fashion.
+            Will also count-down the latch if passed in.
+            """
             info = context().fetch(self.__information)
             if info:
                 lock.acquire()
@@ -48,12 +53,12 @@ class SpotifyTrack:
             if latch:
                 latch.count_down()
         
-        for context in basic_contexts:
+        for context in self.basic_contexts:
             get_context(context)
         
-        latch = CountDownLatch(len(dependency_contexts))
+        latch = CountDownLatch(len(self.dependency_contexts))
         
-        for context in dependency_contexts:
+        for context in self.dependency_contexts:
             thread = threading.Thread(target=get_context, args=(context, latch))
             thread.start()
         
