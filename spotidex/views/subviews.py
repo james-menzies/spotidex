@@ -27,12 +27,16 @@ class BaseSubView:
     def __init__(self, title: str = "Generic View", placeholder: str = "No information available"):
         # the default for SubViews to use when data is invalid or does not
         # satisfy the required information.
-        self._placeholder = urwid.Filler(urwid.Text(placeholder, align='center'))
+        self.__placeholder = urwid.Filler(urwid.Text(placeholder, align='center'))
         self.__title = title
     
     @property
     def title(self) -> str:
         return self.__title
+    
+    @property
+    def placeholder(self):
+        return self.__placeholder
     
     @abstractmethod
     def update_widget(self, data: Optional[dict] = None) -> urwid.Widget:
@@ -73,7 +77,7 @@ class ClassicalInfoSubView(BaseSubView):
     
     def __init__(self):
         super().__init__(title="Classical Info")
-        self.__widget = self._placeholder
+        self.__widget = self.placeholder
     
     @property
     def widget(self):
@@ -83,7 +87,7 @@ class ClassicalInfoSubView(BaseSubView):
         
         data = self._get_data_section(data, "classical_info", ["work", "composer"])
         if not data:
-            self.__widget = self._placeholder
+            self.__widget = self.placeholder
             return self.__widget
         
         column1 = []
@@ -110,7 +114,7 @@ class RawInfoSubView(BaseSubView):
     
     def __init__(self):
         super().__init__(title="Raw Spotify Info")
-        self.__widget = self._placeholder
+        self.__widget = self.placeholder
     
     @property
     def widget(self):
@@ -119,7 +123,7 @@ class RawInfoSubView(BaseSubView):
     def update_widget(self, data: Optional[dict] = None) -> urwid.Widget:
         data = self._get_data_section(data, "basic_info", ["track", "artists", "album"])
         if not data:
-            self.__widget = self._placeholder
+            self.__widget = self.placeholder
             return self.__widget
         
         column1 = ["Track:", "Album:", "Artist(s):"]
@@ -132,7 +136,7 @@ class RecommendedSubView(BaseSubView):
     
     def __init__(self):
         super().__init__(title="Other Works")
-        self.__widget = self._placeholder
+        self.__widget = self.placeholder
     
     @property
     def widget(self):
@@ -143,12 +147,12 @@ class RecommendedSubView(BaseSubView):
         data1 = self._get_data_section(data, "recommended_info", ["works"])
         data2 = self._get_data_section(data, "composer_info", ["name"])
         if not data1 or not data2:
-            self.__widget = self._placeholder
+            self.__widget = self.placeholder
             return self.__widget
         
         works = data1["works"]
         if not isinstance(works, list):
-            self.__widget = self._placeholder
+            self.__widget = self.placeholder
             return self.__widget
         title = urwid.Text(f"Other Works by {data2['name']}", align='center')
         div = urwid.Divider(div_char='-', top=1, bottom=1)
@@ -161,7 +165,7 @@ class RecommendedSubView(BaseSubView):
 class WikiSubview(BaseSubView):
     def __init__(self, title):
         super().__init__(title)
-        self.__widget = self._placeholder
+        self.__widget = self.placeholder
     
     @property
     def widget(self):
