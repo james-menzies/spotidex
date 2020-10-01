@@ -57,7 +57,11 @@ class TerminalWrapper:
     def run_task(cls, task: Callable, fd: int) -> None:
         
         def write_func(data: str) -> None:
-            os.write(fd, str.encode(str(data)))
+            try:
+                os.write(fd, str.encode(str(data)))
+            except OSError:
+                # Pipe has already been closed.
+                pass
         
         thread = Thread(target=task, args=(write_func,))
         thread.setDaemon(True)
