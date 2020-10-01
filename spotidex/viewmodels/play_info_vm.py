@@ -3,7 +3,7 @@ from threading import Lock, Thread
 from typing import Callable
 
 from spotidex.models.spotifyTrack import SpotifyTrack
-from spotidex.models.Session import Session
+from spotidex.models.session import Session
 from spotidex.models.spotifyAuth import SpotifyAuth
 from spotidex.views.subviews import *
 
