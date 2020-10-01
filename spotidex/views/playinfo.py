@@ -44,7 +44,7 @@ class PlayInfo:
         self.__init__subview_selection()
         
         self.sub_view_frame: urwid.Frame = urwid.Frame(self.sub_views[0].widget)
-        self.__add_subview_frame(self.sub_view_frame, 30, "More Information")
+        self.__add_subview_frame(self.sub_view_frame, 20, "More Information")
         
         self.__init__button_bar()
         self.__write_pipe = TerminalWrapper.get_pipe(self.__update_views)
@@ -83,16 +83,16 @@ class PlayInfo:
             buttons.append(self.__create_button(view.title, self.__change_sub_view, user_data=index))
         walker = urwid.SimpleFocusListWalker(buttons)
         
-        grid_flow = urwid.GridFlow(walker, cell_width=25, h_sep=1, v_sep=1, align='center')
+        grid_flow = urwid.GridFlow(walker, cell_width=15, h_sep=1, v_sep=1, align='center')
         self.__add_to_top_container(grid_flow)
     
     def __init__button_bar(self):
         
-        previous_btn = self.__create_button("Previous", self.previous, key='p')
+        previous_btn = self.__create_button("Prev.", self.previous, key='p')
         next_btn = self.__create_button("Next", self.next, key="n")
-        static_btn = self.__create_button("Static", self.static, key='s')
-        refresh_btn = self.__create_button("Refresh", self.refresh_views, key='r')
-        grid_flow = urwid.GridFlow([previous_btn, next_btn, static_btn, refresh_btn], 20, 1, 1, 'center')
+        static_btn = self.__create_button("Stat.", self.static, key='s')
+        refresh_btn = self.__create_button("Ref.", self.refresh_views, key='r')
+        grid_flow = urwid.GridFlow([previous_btn, next_btn, static_btn, refresh_btn], 15, 1, 1, 'center')
         self.__add_to_top_container(grid_flow)
     
     def __change_sub_view(self, button: urwid.Button, index: int) -> None:
