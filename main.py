@@ -17,4 +17,7 @@ if auth.current_user:
 else:
     starting_screen = LoginScreen()
 
-TerminalWrapper.start_application(starting_screen)
+try:
+    TerminalWrapper.start_application(starting_screen)
+except KeyboardInterrupt:
+    TerminalWrapper.clean_resources()

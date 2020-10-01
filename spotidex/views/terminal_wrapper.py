@@ -1,5 +1,5 @@
 import os
-from typing import Protocol, Callable, Any, List, Tuple
+from typing import Protocol, Callable, Any, List, Tuple, Optional
 from threading import Thread, RLock
 import urwid
 
@@ -32,9 +32,15 @@ class TerminalWrapper:
     def change_screen(cls, view: View) -> None:
         cls.__frame.contents["body"] = (view.widget, None)
     
-    @staticmethod
-    def exit(button) -> None:
+    @classmethod
+    def exit(cls, button: Optional[urwid.Button] = None) -> None:
+        cls.clean_resources()
         raise urwid.ExitMainLoop()
+    
+    @classmethod
+    def clean_resources(cls):
+        for pipe in cls.__open_pipes:
+            cls.remove_pipe(pipe)
     
     @classmethod
     def run_task(cls, task: Callable, fd: int) -> None:
@@ -49,17 +55,18 @@ class TerminalWrapper:
     
     @classmethod
     def get_pipe(cls, update: Callable) -> int:
-        
-        return cls.__loop.watch_pipe(update)
+        fd = cls.__loop.watch_pipe(update)
+        cls.__open_pipes.append(fd)
+        return fd
 
     
     @classmethod
     def remove_pipe(cls, fd: int) -> str:
-        try:
-            os.close(fd)
-            status = f"watch pipe removed: {cls.__loop.remove_watch_pipe(fd)}"
-        except:
-            status = "Exception was thrown"
+    
+        status = f"watch pipe removed: {cls.__loop.remove_watch_pipe(fd)}"
+        os.close(fd)
+        cls.__open_pipes.remove(fd)
+
         return status
     
     @classmethod
