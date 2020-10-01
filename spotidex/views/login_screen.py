@@ -1,4 +1,3 @@
-import urwid
 from spotidex.viewmodels.login_screen_vm import LoginScreenVM
 from .components import Menu, Choice
 from .main_menu import MainMenu
@@ -19,9 +18,7 @@ class LoginScreen:
             Choice("Exit Spotidex", TerminalWrapper.exit),
         ]
         
-        title = "Welcome to Spotidex"
-        
-        menu = Menu(title=title)
+        menu = Menu()
         menu.add_choice_block(choices)
         return menu.build()
     

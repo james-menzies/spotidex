@@ -12,28 +12,32 @@ class Choice:
 
 class Menu:
     
-    def __init__(self, title: str = ""):
+    def __init__(self):
+        font = urwid.font.HalfBlock5x4Font()
+        txt = urwid.BigText("Spotidex", font)
+        txt = urwid.Padding(txt, "center", width="clip")
+        version = urwid.Text("v 1.0", align='center')
+        div = urwid.Divider(top=4)
+        self.__body = [txt, version, div]
+
+
+    def add_choice_block(self, choices: List[Choice], description: str = "") -> None:
         
-        self.__body = []
-        self.div = urwid.Divider()
-        
-        if title:
-            self.__title = urwid.Text(title)
-            self.__body.extend([self.__title, self.div])
-    
-    def add_text(self, txt: urwid.Text, div: bool = True) -> None:
-        self.__body.append(txt)
-        if div:
-            self.__body.append(self.div)
-    
-    def add_choice_block(self, choices: List[Choice], description=False) -> None:
+        block = []
+        if description:
+            block.append(urwid.Text(description))
+            block.append(urwid.Divider())
         
         for choice in choices:
             button = urwid.Button(choice.label)
             urwid.connect_signal(button, 'click', choice.callback)
-            self.__body.append(urwid.AttrMap(button, None, focus_map='reversed'))
-    
-    def build(self) -> urwid.Padding:
+            button = urwid.AttrMap(urwid.LineBox(button), 'button')
+            block.append(button)
         
-        menu = urwid.ListBox(urwid.SimpleFocusListWalker(self.__body))
-        return urwid.Padding(menu, left=20, right=20, align='center')
+        pile = urwid.Pile(block)
+        
+        self.__body.append(urwid.Padding(pile, align="center", width=20))
+    
+    def build(self) -> urwid.Widget:
+        
+        return urwid.Filler(urwid.Pile(self.__body))

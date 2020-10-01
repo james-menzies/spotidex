@@ -14,23 +14,34 @@ class TerminalWrapper:
     __palette: List[Tuple[str]] = [
         ('bg', 'dark green', 'black',),
         ('reversed', 'black', 'white',),
+        ('standout', 'dark green,bold', 'black', ),
+        ('border', 'light magenta', 'black', ),
+        ('button', 'black', 'light gray', ),
     ]
-    __placeholder = urwid.SolidFill()
+    __background = urwid.SolidFill('*')
+    __placeholder = urwid.WidgetPlaceholder(urwid.SolidFill())
     __status = urwid.Text(" ", align='left')
     __footer = urwid.Text(" ", align='center')
     __frame = urwid.Frame(__placeholder, footer=__footer)
+    __linebox = urwid.LineBox(__frame, tlcorner= u'\u2554',
+                              trcorner=u'\u2557', blcorner=u'\u255A',
+                              brcorner=u'\u255D')
+    __overlay = urwid.Overlay(__linebox, __background,
+                              align='center', width=('relative', 85),
+                              valign='middle', height=('relative', 90),
+                              )
     __open_pipes: List[int] = []
     
-    __loop = urwid.MainLoop(urwid.AttrMap(__frame, 'bg'), palette=__palette)
+    __loop = urwid.MainLoop(urwid.AttrMap(__overlay, 'border'), palette=__palette)
 
     @classmethod
     def start_application(cls, initial_screen: View) -> None:
-        cls.__frame.contents["body"] = (initial_screen.widget, None)
+        cls.__placeholder.original_widget = initial_screen.widget
         cls.__loop.run()
     
     @classmethod
     def change_screen(cls, view: View) -> None:
-        cls.__frame.contents["body"] = (view.widget, None)
+        cls.__placeholder.original_widget = view.widget
     
     @classmethod
     def exit(cls, button: Optional[urwid.Button] = None) -> None:

@@ -1,10 +1,10 @@
-from spotidex.models.session import Session
-from spotidex.models.spotifyAuth import SpotifyAuth
-from .components import Menu, Choice
 import urwid
 
-from .playinfo import PlayInfo
+from spotidex.models.session import Session
+from spotidex.models.spotifyAuth import SpotifyAuth
 from . import login_screen
+from .components import Menu, Choice
+from .playinfo import PlayInfo
 from .terminal_wrapper import TerminalWrapper
 
 
@@ -25,21 +25,17 @@ class MainMenu:
             Choice("Exit Spotidex", TerminalWrapper.exit, )
         ]
         
-        menu = Menu("Main Menu")
-        menu.add_text(urwid.Text(message))
-        menu.add_choice_block(choices, description=True)
+        menu = Menu()
+        menu.add_choice_block(choices, description=message)
         self.__widget = menu.build()
     
- 
     def begin(self, button):
-
         TerminalWrapper.change_screen(PlayInfo())
-        
+    
     def logout(self, button):
         TerminalWrapper.change_screen(login_screen.LoginScreen())
         Session.get_instance().log_out()
         self.__auth.log_out()
-    
     
     @property
     def widget(self):
