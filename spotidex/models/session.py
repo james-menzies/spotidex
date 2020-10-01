@@ -1,7 +1,8 @@
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Protocol, TypeVar
 
 from .spotifyTrack import SpotifyTrack
 
+T = TypeVar('T')
 
 class Session:
     __instance = None
@@ -16,33 +17,37 @@ class Session:
         if Session.__instance:
             raise ValueError("There can only be one instance of Session")
         
-        self.__tracks: List[SpotifyTrack] = []
-        self.__index = 0
+        self.__tracks: List[T] = []
+        self.__current_index = 0
     
-    def get_previous(self) -> Tuple[str, Optional[SpotifyTrack]]:
-        return self.__retrieve_track(self.__index - 1)
+    @property
+    def current_index(self):
+        return self.__current_index
     
-    def get_next(self) -> Tuple[str, Optional[SpotifyTrack]]:
-        return self.__retrieve_track(self.__index + 1)
+    def get_previous(self) -> Tuple[str, Optional[T]]:
+        return self.__retrieve_track(self.__current_index - 1)
     
-    def __retrieve_track(self, index) -> Tuple[str, Optional[SpotifyTrack]]:
+    def get_next(self) -> Tuple[str, Optional[T]]:
+        return self.__retrieve_track(self.__current_index + 1)
+    
+    def __retrieve_track(self, index) -> Optional[T]:
         
         if not self.__tracks:
-            return "No tracks played yet.", None
+            return None
         
         if 0 <= index < len(self.__tracks):
-            self.__index = index
+            self.__current_index = index
             return f"At track {index + 1} of {len(self.__tracks)}", self.__tracks[index]
         elif index < 0:
             return "Reached start of playback session", None
         else:
             return "Reached most recent track.", None
     
-    def add_track(self, track: SpotifyTrack) -> None:
+    def add_track(self, track: T) -> None:
         
         for index, t in enumerate(self.__tracks):
             if t == track:
                 self.__tracks[index] = track
         if not self.__tracks or not self.__tracks[-1] == track:
             self.__tracks.append(track)
-        self.__index = len(self.__tracks) - 1
+        self.__current_index = len(self.__tracks) - 1

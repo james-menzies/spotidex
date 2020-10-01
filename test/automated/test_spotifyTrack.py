@@ -26,3 +26,4 @@ class TestSpotifyTrack(unittest.TestCase):
         self.assertNotEqual(self.blank1, self.equal1, "blank should not equal normal track")
         self.assertEqual(self.equal1, self.equal2, "Two Spotify Tracks with same ID should be equal")
         self.assertNotEqual(self.equal2, self.non_equal, "Spotify with differing IDs are not equal")
+        self.assertNotEqual(self.non_equal, None, "None does not equal real SpotifyTrack")
