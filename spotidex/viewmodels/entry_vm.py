@@ -2,6 +2,7 @@ import time
 from threading import Lock, Thread
 from typing import Callable
 
+from spotidex.models.spotifyTrack import SpotifyTrack
 from spotidex.models.Session import Session
 from spotidex.models.spotifyAuth import SpotifyAuth
 from spotidex.views.subviews import *
@@ -11,27 +12,21 @@ class EntryVM:
     
     def __init__(self):
         
-        self.__callback = SpotifyAuth.get_instance().currently_playing
-        self.__current_song_data = None
-        self.__previous_song_data = None
-        self.__matching_song_data = False
+        self.__callback: Callable[[], SpotifyTrack] = SpotifyAuth.get_instance().currently_playing
+        self.__current_song_data: Optional[SpotifyTrack] = None
+        self.__previous_song_data: Optional[SpotifyTrack] = None
         self.__refresh_lock: Lock = Lock()
         self.__auto_lock: Lock = Lock()
         self.__automatic_refresh: bool = True
         self.__refresh_killed: bool = False
     
     @property
-    def current_song_data(self) -> dict:
-        return self.__current_song_data
-    
-    @property
-    def previous_song_data(self) -> dict:
-        return self.__previous_song_data
-    
-    @property
-    def matching_song_data(self) -> bool:
-        return self.__matching_song_data
-    
+    def current_song_data(self) -> Optional[Dict]:
+        if self.__current_song_data:
+            return self.__current_song_data.information
+        else:
+            return None
+        
     @property
     def sub_views(self) -> List[BaseSubView]:
         return [ComposerWikiSubView(), WorkWikiSubView(), RecommendedSubView(), RawInfoSubView()]
@@ -64,14 +59,16 @@ class EntryVM:
         self.__automatic_refresh = False
         self.__auto_lock.release()
         
+        self.__previous_song_data = None
+        self.__current_song_data = None
+        
         self.__refresh_lock.acquire()
         if get_next:
             message, track = Session.get_instance().get_next()
         else:
             message, track = Session.get_instance().get_previous()
         if track:
-            self.__matching_song_data = False
-            self.__current_song_data = track.information
+            self.__current_song_data = track
         
         self.__refresh_lock.release()
         write_func(message)
@@ -98,25 +95,19 @@ class EntryVM:
         
         self.__previous_song_data = self.__current_song_data
         self.__current_song_data = None
-        self.__matching_song_data = False
         
         write_func("Refreshing...")
         try:
-            current_song = self.__callback()
-            self.__current_song_data = current_song.information
+            new_song = self.__callback()
         except Exception:
             write_func("Can't connect to Spotify")
             return
         
-        if not self.current_song_data or not self.previous_song_data:
-            self.__matching_song_data = self.current_song_data == self.previous_song_data
-        else:
-            current_id = self.__current_song_data["basic_info"]["id"]
-            prev_id = self.__previous_song_data["basic_info"]["id"]
-            self.__matching_song_data = current_id == prev_id
+        if new_song != self.__previous_song_data:
+            self.__current_song_data = new_song
         
-        if not self.__matching_song_data:
-            Session.get_instance().add_track(current_song)
+        if self.__current_song_data:
+            Session.get_instance().add_track(self.__current_song_data)
         
         self.__auto_lock.acquire()
         self.__automatic_refresh = True

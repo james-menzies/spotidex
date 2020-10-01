@@ -66,6 +66,9 @@ class SpotifyTrack:
     
     def __eq__(self, other) -> bool:
         
+        if not isinstance(other, SpotifyTrack):
+            return False
+        
         if not self.information or not other.information:
             return not self.information and not other.information
         

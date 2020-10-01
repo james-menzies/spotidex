@@ -100,9 +100,11 @@ class Entry:
     def __update_views(self, data):
         """
         Refresh method that gets called when self.__write_pipe is written to by the VM.
+        VM will expose a dictionary object to enable the subviews to update. If no update
+        is required the vm's current_song_data will be None.
         """
         
-        if not self.vm.matching_song_data and self.vm.current_song_data:
+        if self.vm.current_song_data:
             self.main_view_frame.contents["body"] = (
                 self.main_view.update_widget(self.vm.current_song_data), None)
             for view in self.sub_views:
