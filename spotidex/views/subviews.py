@@ -15,11 +15,13 @@ def generate_column_view(*columns: List[str]) -> urwid.Widget:
     col_body = []
     
     for column in columns:
-        body = [urwid.Text(item, wrap='ellipsis') for item in column]
-        walker = urwid.SimpleListWalker(body)
-        col_body.append(urwid.ListBox(walker))
+        body = [('pack', urwid.Text(item, wrap='ellipsis')) for item in column]
+        pile = urwid.Pile(body)
+        col_body.append(pile)
+
+    col_body[0] = (16, col_body[0])
     
-    return urwid.Columns(col_body)
+    return urwid.Filler(urwid.Padding(urwid.Columns(col_body), align='center', left=2, right=2))
 
 
 class BaseSubView:
@@ -113,7 +115,7 @@ class ClassicalInfoSubView(BaseSubView):
 class RawInfoSubView(BaseSubView):
     
     def __init__(self):
-        super().__init__(title="Raw Spotify Info")
+        super().__init__(title="Spotify")
         self.__widget = self.placeholder
     
     @property
@@ -135,7 +137,7 @@ class RawInfoSubView(BaseSubView):
 class RecommendedSubView(BaseSubView):
     
     def __init__(self):
-        super().__init__(title="Other Works")
+        super().__init__(title="Suggested")
         self.__widget = self.placeholder
     
     @property
@@ -209,7 +211,7 @@ class WikiSubview(BaseSubView):
 class ComposerWikiSubView(WikiSubview):
     
     def __init__(self):
-        super().__init__("About the Composer")
+        super().__init__("Composer")
     
     def get_introduction(self, data: Optional[Dict[str, Dict]]) -> Optional[urwid.Widget]:
         return None
@@ -221,7 +223,7 @@ class ComposerWikiSubView(WikiSubview):
 class WorkWikiSubView(WikiSubview):
     
     def __init__(self):
-        super().__init__("About this Work")
+        super().__init__("Work")
     
     def get_introduction(self, data: Optional[Dict[str, Dict]]) -> Optional[urwid.Widget]:
         return None
