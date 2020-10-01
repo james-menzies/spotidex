@@ -8,7 +8,7 @@ from spotidex.models.spotifyAuth import SpotifyAuth
 from spotidex.views.subviews import *
 
 
-class EntryVM:
+class PlayInfoVM:
     
     def __init__(self):
         

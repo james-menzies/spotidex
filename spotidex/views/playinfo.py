@@ -2,7 +2,7 @@ from typing import Callable, Any
 
 import urwid
 
-from spotidex.viewmodels.entry_vm import EntryVM
+from spotidex.viewmodels.play_info_vm import PlayInfoVM
 from .scroll import Scrollable
 from .subviews import *
 from . import main_menu
@@ -25,11 +25,11 @@ class EntryPile(urwid.Pile):
         self.callbacks[key] = self.callbacks[key.upper()] = lambda: btn.keypress((15,), 'enter')
 
 
-class Entry:
+class PlayInfo:
     
     def __init__(self):
         
-        self.vm: EntryVM = EntryVM()
+        self.vm: PlayInfoVM = PlayInfoVM()
         self.main_view: BaseSubView = self.vm.main_view
         self.sub_views: List[BaseSubView] = self.vm.sub_views
         self.current_sub_view: int = 0

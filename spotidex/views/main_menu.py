@@ -2,7 +2,7 @@ from spotidex.models.spotifyAuth import SpotifyAuth
 from .components import Menu, Choice
 import urwid
 
-from .entry import Entry
+from .playinfo import PlayInfo
 from . import login_screen
 from .terminal_wrapper import TerminalWrapper
 
@@ -32,7 +32,7 @@ class MainMenu:
  
     def begin(self, button):
 
-        TerminalWrapper.change_screen(Entry())
+        TerminalWrapper.change_screen(PlayInfo())
         
     def logout(self, button):
         TerminalWrapper.change_screen(login_screen.LoginScreen())
