@@ -35,12 +35,19 @@ class PlayInfoVM:
     def main_view(self) -> BaseSubView:
         return ClassicalInfoSubView()
     
-    def toggle_automatic_refresh(self) -> bool:
+    @property
+    def automatic_refresh(self) -> bool:
         self.__auto_lock.acquire()
-        self.__automatic_refresh = not self.__automatic_refresh
-        final = self.__automatic_refresh
+        val = self.__automatic_refresh
         self.__auto_lock.release()
-        return final
+        
+        return val
+    
+    @automatic_refresh.setter
+    def automatic_refresh(self, value: bool) -> None:
+        self.__auto_lock.acquire()
+        self.__automatic_refresh = value
+        self.__auto_lock.release()
     
     def kill_refresh(self):
         self.__auto_lock.acquire()

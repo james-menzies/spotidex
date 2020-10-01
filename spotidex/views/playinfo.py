@@ -113,7 +113,7 @@ class PlayInfo:
             self.sub_view_frame.contents["body"] = (
                 self.sub_views[self.current_sub_view].widget, None)
         
-        if self.vm.current_song_data:
+        if self.vm.automatic_refresh and self.vm.current_song_data:
             TerminalWrapper.flash_message(data)
         else:
             TerminalWrapper.flash_message(data, clear=False)
@@ -137,8 +137,8 @@ class PlayInfo:
         TerminalWrapper.run_task(self.vm.previous, self.__write_pipe)
     
     def static(self, button) -> None:
-        automatic = self.vm.toggle_automatic_refresh()
-        if automatic:
+        self.vm.automatic_refresh = not self.vm.automatic_refresh
+        if self.vm.automatic_refresh:
             self.refresh_views(button)
         else:
             TerminalWrapper.flash_message("Static Mode", clear=False)
