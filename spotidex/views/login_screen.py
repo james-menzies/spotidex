@@ -26,12 +26,14 @@ class LoginScreen:
         return menu.build()
     
     def login_update(self, data):
-        # TerminalWrapper.flash_message(data)
+        TerminalWrapper.flash_message(data, duration=3)
         
         if self.__vm.success:
             TerminalWrapper.change_screen(MainMenu())
+            TerminalWrapper.remove_pipe(self.write_pipe)
     
     def log_in(self, button):
+        TerminalWrapper.flash_message("Please authenticate in popped up browser", clear=False)
         TerminalWrapper.run_task(self.__vm.login, self.write_pipe)
     
     @property
