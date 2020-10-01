@@ -21,6 +21,7 @@ class TestSubviews(unittest.TestCase):
                 "peach": 3
             }
         }
+        self.testing_matrix = [ComposerWikiSubView, WorkWikiSubView, ClassicalInfoSubView, RawInfoSubView, RecommendedSubView]
     
     def test_get_data_section(self):
         result = BaseSubView._get_data_section(self.data, "test")
@@ -33,3 +34,8 @@ class TestSubviews(unittest.TestCase):
         self.assertIsNone(result, "Missing attribute should yield None")
         result = BaseSubView._get_data_section(result, "test2", ["mango", "banana"])
         self.assertIsNone(result, "data should still return None with partial attribute match")
+    
+    def test_subviews_handle_none(self):
+        for view in self.testing_matrix:
+            view = view()
+            self.assertEqual(view.placeholder, view.update_widget(None))

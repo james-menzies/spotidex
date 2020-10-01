@@ -4,6 +4,7 @@ from .spotifyTrack import SpotifyTrack
 
 T = TypeVar('T')
 
+
 class Session:
     __instance = None
     
@@ -18,11 +19,11 @@ class Session:
             raise ValueError("There can only be one instance of Session")
         
         self.__tracks: List[T] = []
-        self.__current_index = 0
+        self.__current_index = -1
     
     @property
     def current_index(self):
-        return self.__current_index
+        return self.__current_index + 1  # human readable
     
     def get_previous(self) -> Tuple[str, Optional[T]]:
         return self.__retrieve_track(self.__current_index - 1)
@@ -37,11 +38,11 @@ class Session:
         
         if 0 <= index < len(self.__tracks):
             self.__current_index = index
-            return f"At track {index + 1} of {len(self.__tracks)}", self.__tracks[index]
+            return self.current_index
         elif index < 0:
-            return "Reached start of playback session", None
+            return None
         else:
-            return "Reached most recent track.", None
+            return None
     
     def add_track(self, track: T) -> None:
         

@@ -113,7 +113,7 @@ class PlayInfoVM:
         if new_song != self.__previous_song_data:
             self.__current_song_data = new_song
         
-        if self.__current_song_data:
+        if self.__current_song_data.information:
             Session.get_instance().add_track(self.__current_song_data)
         
         self.__auto_lock.acquire()
