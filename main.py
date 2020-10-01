@@ -1,6 +1,6 @@
 import logging
-import os
 import sys
+import os
 
 from spotidex.models.spotifyAuth import SpotifyAuth
 from spotidex.views.login_screen import LoginScreen
@@ -9,6 +9,8 @@ from spotidex.views.terminal_wrapper import TerminalWrapper
 
 sys.tracebacklimit = 0
 logging.disable(sys.maxsize)
+sys.stderr = open(os.devnull, "w")
+sys.stdout = open(os.devnull, "w")
 
 auth = SpotifyAuth.get_instance()
 

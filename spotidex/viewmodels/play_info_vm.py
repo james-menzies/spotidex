@@ -2,6 +2,7 @@ import time
 from threading import Lock, Thread
 from typing import Callable
 
+
 from spotidex.models.spotifyTrack import SpotifyTrack
 from spotidex.models.session import Session
 from spotidex.models.spotifyAuth import SpotifyAuth
