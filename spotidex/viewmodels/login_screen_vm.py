@@ -18,7 +18,9 @@ class LoginScreenVM:
             return
         
         self.lock.acquire()
-        
+        old_stderr = sys.stderr
+        sys.stderr = open(os.devnull, "w")
+
         if self.success:
             write_func("You are already logged in!")
             return
@@ -35,3 +37,4 @@ class LoginScreenVM:
             write_func("An unknown login error occurred.")
         finally:
             self.lock.release()
+            sys.stderr = old_stderr
