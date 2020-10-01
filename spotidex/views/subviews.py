@@ -173,7 +173,7 @@ class WikiSubview(BaseSubView):
     
     def update_widget(self, data: Optional[Dict[str, Dict]] = None) -> urwid.Widget:
         
-        if not data:
+        if not data or not data["composer_info"]:
             self.__widget = self.placeholder
             return self.__widget
         

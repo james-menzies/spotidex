@@ -19,6 +19,7 @@ class PlayInfoVM:
         self.__auto_lock: Lock = Lock()
         self.__automatic_refresh: bool = True
         self.__refresh_killed: bool = False
+        self.__session = Session.get_instance()
     
     @property
     def current_song_data(self) -> Optional[Dict]:
@@ -26,7 +27,7 @@ class PlayInfoVM:
             return self.__current_song_data.information
         else:
             return None
-        
+    
     @property
     def sub_views(self) -> List[BaseSubView]:
         return [ComposerWikiSubView(), WorkWikiSubView(), RecommendedSubView(), RawInfoSubView()]
@@ -71,11 +72,17 @@ class PlayInfoVM:
         
         self.__refresh_lock.acquire()
         if get_next:
-            message, track = Session.get_instance().get_next()
+            track = self.__session.get_next()
         else:
-            message, track = Session.get_instance().get_previous()
+            track = self.__session.get_previous()
+        
         if track:
             self.__current_song_data = track
+            message = f"At track #{self.__session.current_index} of {self.__session.size}"
+        elif get_next:
+            message = "Reached start of playback"
+        else:
+            message = "Reached end of playback"
         
         self.__refresh_lock.release()
         write_func(message)
@@ -107,13 +114,14 @@ class PlayInfoVM:
         try:
             new_song = self.__callback()
         except Exception:
-            write_func("Can't connect to Spotify")
+            write_func("Can't connect to Spotify. Check internet connection...")
+            self.__refresh_lock.release()
             return
         
         if new_song != self.__previous_song_data:
             self.__current_song_data = new_song
         
-        if self.__current_song_data.information:
+        if self.__current_song_data and self.__current_song_data.information:
             Session.get_instance().add_track(self.__current_song_data)
         
         self.__auto_lock.acquire()

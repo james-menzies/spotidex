@@ -81,10 +81,12 @@ class ClassicalInfo(Context):
         required_keys = ["basic_info", "composer_info"]
         if [key for key in required_keys if key not in data]:
             return
-        
+       
         keys = {}
         final = {"classical_info": keys}
-        
+        if not data["composer_info"]:
+            return final
+
         basic_info = data["basic_info"]
         composer = basic_info["artists"][0]
         keys["composer"] = composer
@@ -124,6 +126,10 @@ class RecommendedInfo(Context):
     def fetch(self, data: dict) -> Optional[Dict[str, dict]]:
         keys = {}
         final = {"recommended_info": keys}
+        if "composer_info" not in data:
+            return final
+        if not data["composer_info"]:
+            return final
         
         composer_id = data["composer_info"]["id"]
         params = {

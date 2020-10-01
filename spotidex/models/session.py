@@ -25,6 +25,10 @@ class Session:
     def current_index(self):
         return self.__current_index + 1  # human readable
     
+    @property
+    def size(self):
+        return len(self.__tracks)
+    
     def get_previous(self) -> Tuple[str, Optional[T]]:
         return self.__retrieve_track(self.__current_index - 1)
     
@@ -38,7 +42,7 @@ class Session:
         
         if 0 <= index < len(self.__tracks):
             self.__current_index = index
-            return self.current_index
+            return self.__tracks[self.__current_index]
         elif index < 0:
             return None
         else:
