@@ -78,11 +78,11 @@ class PlayInfoVM:
         
         if track:
             self.__current_song_data = track
-            message = f"At track #{self.__session.current_index} of {self.__session.size}"
+            message = f"At track # {self.__session.current_index} of {self.__session.size}"
         elif get_next:
-            message = "Reached start of playback"
-        else:
             message = "Reached end of playback"
+        else:
+            message = "Reached start of playback"
         
         self.__refresh_lock.release()
         write_func(message)

@@ -56,3 +56,6 @@ class Session:
         if not self.__tracks or not self.__tracks[-1] == track:
             self.__tracks.append(track)
         self.__current_index = len(self.__tracks) - 1
+    
+    def log_out(self):
+        self.__tracks = []

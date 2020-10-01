@@ -48,6 +48,8 @@ class PlayInfo:
         
         self.__init__button_bar()
         self.__write_pipe = TerminalWrapper.get_pipe(self.__update_views)
+        
+        TerminalWrapper.run_task(self.vm.refresh_loop, self.__write_pipe)
     
     def __add_to_top_container(self, widget: urwid.Widget) -> None:
         self.top_container.contents.append(
@@ -128,6 +130,7 @@ class PlayInfo:
     def go_back(self, button: urwid.Button) -> None:
         self.vm.kill_refresh()
         TerminalWrapper.remove_pipe(self.__write_pipe)
+        TerminalWrapper.flash_message("")
         TerminalWrapper.change_screen(main_menu.MainMenu())
     
     def next(self, button) -> None:

@@ -1,3 +1,4 @@
+from spotidex.models.session import Session
 from spotidex.models.spotifyAuth import SpotifyAuth
 from .components import Menu, Choice
 import urwid
@@ -36,6 +37,7 @@ class MainMenu:
         
     def logout(self, button):
         TerminalWrapper.change_screen(login_screen.LoginScreen())
+        Session.get_instance().log_out()
         self.__auth.log_out()
     
     
