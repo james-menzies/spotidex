@@ -27,19 +27,19 @@ jobs:
           SPOTIPY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
         run: |
           python -m unittest discover test/automated
-    deployment:
-      needs: testing_suite
-      runs-on: ubuntu-latest
-      steps:
-        - name: Fresh clone & repo install
-          uses: appleboy/ssh-action@master
-          with:
-            host: 34.203.1.173
-            username: github-actions
-            key: ${{ secrets.AMAZON_DEPLOYMENT }}
-            script: |
-              rm -rf spotidex
-              git clone https://github.com/redbrickhut/spotidex
-              python3.8 -m venv /home/github/spotidex/venv
-              source /home/github/spotidex/venv/bin/activate
-              python /home/github/spotidex/setup.py install
+  deployment:
+    needs: testing_suite
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fresh clone & repo install
+        uses: appleboy/ssh-action@master
+        with:
+          host: 34.203.1.173
+          username: github-actions
+          key: ${{ secrets.AMAZON_DEPLOYMENT }}
+          script: |
+            rm -rf spotidex
+            git clone https://github.com/redbrickhut/spotidex
+            python3.8 -m venv /home/github/spotidex/venv
+            source /home/github/spotidex/venv/bin/activate
+            python /home/github/spotidex/setup.py install
