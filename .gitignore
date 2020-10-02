@@ -4,3 +4,5 @@ __pycache__
 .cache
 manual_test_cache
 .idea
+build/
+dist/

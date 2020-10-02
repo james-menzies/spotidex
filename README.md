@@ -17,8 +17,11 @@ Hence... Spotidex.
 
 ## How To Install This Program
 
-(Coming Soon)
+> Currently, only the Mac and Linux platforms are supported. There will be a Windows workaround in the future
 
+Please complete the following steps to install Spotidex:
+
+1. Install Python 3.6 or later. 
 ## How To Use This Program
 
 ### Login Screen

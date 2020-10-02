@@ -7,7 +7,6 @@ from spotidex.views.login_screen import LoginScreen
 from spotidex.views.main_menu import MainMenu
 from spotidex.views.terminal_wrapper import TerminalWrapper
 
-sys.tracebacklimit = 0
 logging.disable(sys.maxsize)
 sys.stderr = open(os.devnull, "w")
 sys.stdout = open(os.devnull, "w")
