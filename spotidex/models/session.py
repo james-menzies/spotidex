@@ -1,6 +1,5 @@
 from typing import List, Optional, Tuple, Protocol, TypeVar
 
-from .spotifyTrack import SpotifyTrack
 
 T = TypeVar('T')
 
