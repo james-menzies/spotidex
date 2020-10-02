@@ -23,7 +23,7 @@ Please complete the following steps to install Spotidex:
 3. Clone or zip the repository to your local machine.
 4. Navigate to the root directory of the project and run the following command:
 ```shell script
-python setup.py install
+sudo python3 setup.py install
 ```
 5. run the command `spotidex` from anywhere in your directory to run Spotidex.
 
