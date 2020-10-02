@@ -7,13 +7,12 @@ import sys
 def main(args=None):
     # suppress messages to prevent GUI corruption
     logging.disable(sys.maxsize)
-    sys.stderr = open(os.devnull, "w")
     
     os.environ["SPOTIPY_CLIENT_ID"] = "711661c6916a4a9981244380aa852adc"
     
     # set correct path for application
     sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
-    
+    print(sys.path[0])
     from spotidex.models.spotifyAuth import SpotifyAuth
     from spotidex.views.login_screen import LoginScreen
     from spotidex.views.main_menu import MainMenu

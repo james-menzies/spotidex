@@ -1,7 +1,7 @@
 import os
 import sys
 
-from models.spotifyAuth import SpotifyAuth
+from spotidex.models.spotifyAuth import SpotifyAuth
 from threading import Lock
 
 

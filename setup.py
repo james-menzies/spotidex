@@ -13,7 +13,7 @@ setuptools.setup(
                      "so that the listener can get a greater "
                      "appreciation and context for what they're listening to.",
     url="https://github.com/redbrickhut/spotidex",
-    packages=["spotidex"],
+    packages=setuptools.find_packages(),
     install_requires=[
         'google',
         'beautifulsoup4',
