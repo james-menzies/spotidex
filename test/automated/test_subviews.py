@@ -38,4 +38,4 @@ class TestSubviews(unittest.TestCase):
     def test_subviews_handle_none(self):
         for view in self.testing_matrix:
             view = view()
-            self.assertEqual(view.placeholder, view.update_widget(None))
+            view.update_widget(None)
