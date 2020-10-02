@@ -13,7 +13,7 @@ class Choice:
 
 class Button:
     
-    def init(self, label, callback: Callable[[], Any], user_data: Any = None):
+    def __init__(self, label, callback: Callable[[], Any], user_data: Any = None):
         self.__button = urwid.Button(label, on_press=callback, user_data=user_data)
         div = urwid.Divider()
         pile = urwid.Pile([div, self.__button, div], focus_item=self.__button)
@@ -46,7 +46,8 @@ class Menu:
             block.append(urwid.Divider())
         
         for choice in choices:
-            block.append(button(choice.label, choice.callback))
+            button = Button(choice.label, choice.callback)
+            block.append(button.decorated_button)
             block.append(urwid.Divider())
         
         pile = urwid.Pile(block)

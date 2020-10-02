@@ -1,12 +1,12 @@
+from abc import abstractmethod
 from typing import List, Optional, Dict
 
 import urwid
-from abc import abstractmethod
 
 from .scroll import Scrollable
 
 
-def generate_column_view(*columns: List[str]) -> urwid.Widget:
+def generate_column_view(column1: List[str], column2: List[str]) -> urwid.Widget:
     """
     Utility method to help generate a two column view of keys and pairs.
     The Raw Info and Main View use this function to render their respective
@@ -14,12 +14,13 @@ def generate_column_view(*columns: List[str]) -> urwid.Widget:
     """
     col_body = []
     
-    for column in columns:
-        body = [('pack', urwid.Text(item, wrap='ellipsis')) for item in column]
-        pile = urwid.Pile(body)
-        col_body.append(pile)
-
-    col_body[0] = (16, col_body[0])
+    body1 = [('pack', urwid.Text(item, wrap='ellipsis')) for item in column1]
+    body1 = urwid.AttrMap(urwid.Pile(body1), 'standout')
+    col_body.append((16, body1))
+    
+    body2 = [('pack', urwid.Text(item, wrap='ellipsis')) for item in column2]
+    body2 = urwid.AttrMap(urwid.Pile(body2), 'border')
+    col_body.append(body2)
     
     return urwid.Filler(urwid.Padding(urwid.Columns(col_body), align='center', left=2, right=2))
 
@@ -156,10 +157,9 @@ class RecommendedSubView(BaseSubView):
         if not isinstance(works, list):
             self.__widget = self.placeholder
             return self.__widget
-        title = urwid.Text(f"Other Works by {data2['name']}", align='center')
-        div = urwid.Divider(div_char='-', top=1, bottom=1)
-        labels = [urwid.Text(str(work), align='center') for work in works]
-        pile = urwid.Pile([title, div, *labels])
+        title = urwid.Text(('title', f"Other Works by {data2['name']}"), align='center')
+        labels = [urwid.Text(('border', str(work)), align='center') for work in works]
+        pile = urwid.Pile([title, urwid.Divider(), *labels])
         self.__widget = urwid.Filler(pile)
         return self.__widget
 
@@ -181,9 +181,9 @@ class WikiSubview(BaseSubView):
         
         data = self.get_wiki_contents(data)
         
-        title = urwid.Text(self.title)
+        title = urwid.Text(("title", self.title), align='center')
         div = urwid.Divider()
-        body = [title, div]
+        body = [div, title, div]
         
         for item in data:
             
@@ -191,7 +191,7 @@ class WikiSubview(BaseSubView):
                 text = urwid.Text(("title", item["content"]), align="center")
                 body += [text, div]
             else:
-                text = urwid.Text(item["content"])
+                text = urwid.Text(('border', item["content"]))
                 body += [text, div]
         
         pile = urwid.Pile(body)
@@ -214,7 +214,7 @@ class ComposerWikiSubView(WikiSubview):
     
     def get_introduction(self, data: Optional[Dict[str, Dict]]) -> Optional[urwid.Widget]:
         return None
-
+    
     def get_wiki_contents(self, data: Optional[Dict[str, Dict]]) -> List[Dict[str, str]]:
         return data["composer_wiki_info"]["content"]
 
@@ -229,4 +229,3 @@ class WorkWikiSubView(WikiSubview):
     
     def get_wiki_contents(self, data: Optional[Dict[str, Dict]]) -> List[Dict[str, str]]:
         return data["work_wiki_info"]["content"]
-

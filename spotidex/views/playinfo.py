@@ -33,6 +33,7 @@ class PlayInfo:
         self.main_view: BaseSubView = self.vm.main_view
         self.sub_views: List[BaseSubView] = self.vm.sub_views
         self.current_sub_view: int = 0
+        div = urwid.Divider()
         
         self.top_container = EntryPile([])
         self.__widget = urwid.Filler(urwid.Padding(self.top_container, left=1, right=1))
@@ -40,11 +41,14 @@ class PlayInfo:
         
         self.main_view_frame: urwid.Frame = urwid.Frame(self.main_view.widget)
         self.__add_subview_frame(self.main_view_frame, 10, "Track Information")
+        self.__add_to_top_container(div)
         
         self.__init__subview_selection()
+        self.__add_to_top_container(div)
         
         self.sub_view_frame: urwid.Frame = urwid.Frame(self.sub_views[0].widget)
         self.__add_subview_frame(self.sub_view_frame, 20, "More Information")
+        self.__add_to_top_container(div)
         
         self.__init__button_bar()
         self.__write_pipe = TerminalWrapper.get_pipe(self.__update_views)
@@ -63,11 +67,11 @@ class PlayInfo:
     
     def __create_button(self, label: str, function: Callable[[urwid.Button], None],
                         key: Optional[str] = None, user_data: Any = None) -> urwid.LineBox:
-        button: urwid.Button = components.button(label.upper(), function, user_data)
+        button: components.Button = components.Button(label.upper(), function, user_data)
         
         if key:
-            self.top_container.register_button(button.original_widget, key)
-        return button
+            self.top_container.register_button(button.button, key)
+        return button.decorated_button
     
     def __init__header(self):
         

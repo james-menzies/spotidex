@@ -14,20 +14,20 @@ class TerminalWrapper:
     __palette: List[Tuple[str]] = [
         ('bg', 'dark green', 'black',),
         ('reversed', 'black', 'white',),
-        ('standout', 'dark green,bold', 'black', ),
         ('border', 'light magenta', 'black', ),
         ('button', 'white', 'dark magenta', ),
-        ('title', 'light green,bold,underline', 'black')
+        ('title', 'light gray,bold,underline', 'black'),
+        ('standout', 'light gray,bold', 'black')
     ]
     __background = urwid.SolidFill('*')
     __placeholder = urwid.WidgetPlaceholder(urwid.SolidFill())
     __status = urwid.Text(" ", align='left')
     __footer = urwid.Text(" ", align='center')
-    __frame = urwid.Frame(__placeholder, footer=__footer)
+    __frame = urwid.Frame(urwid.AttrMap(__placeholder, 'bg'), footer=urwid.AttrMap(__footer, 'standout'))
     __linebox = urwid.LineBox(__frame, tlcorner= u'\u2554',
                               trcorner=u'\u2557', blcorner=u'\u255A',
                               brcorner=u'\u255D')
-    __overlay = urwid.Overlay(__linebox, __background,
+    __overlay = urwid.Overlay(__linebox, urwid.AttrMap(__background, 'bg'),
                               align='center', width=('relative', 85),
                               valign='middle', height=('relative', 90),
                               )
