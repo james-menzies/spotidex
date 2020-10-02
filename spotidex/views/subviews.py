@@ -93,6 +93,7 @@ class ClassicalInfoSubView(BaseSubView):
             self.__widget = RawInfoSubView().update_widget(data)
             return self.__widget
         
+        data = retrieved_data
         column1 = []
         column2 = []
         

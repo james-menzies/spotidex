@@ -15,7 +15,7 @@ class TerminalWrapper:
         ('bg', 'dark green', 'black',),
         ('reversed', 'black', 'white',),
         ('border', 'light magenta', 'black', ),
-        ('button', 'white', 'dark magenta', ),
+        ('button', 'white', 'dark gray', ),
         ('title', 'light gray,bold,underline', 'black'),
         ('standout', 'light gray,bold', 'black')
     ]
