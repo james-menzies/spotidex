@@ -1,10 +1,5 @@
 # Spotidex
-### A Classical Companion for Spotify
-
->Please note that this application is currently under development, and that 
->v1.0 of the program is due on the 2nd October 2020 as part of my assessment
->for the Coder Academy 2020 CCC course. For ease of editing, this document will 
->be written in the present tense for features not yet implemented.
+### A Classical Music Companion for Spotify
 
 This terminal application is designed to run alongside an active Spotify 
 session, passively using the Spotify API to gather information about a track
@@ -13,7 +8,9 @@ APIs in order to deliver a robust context for that track. This is not unlike a
 device in the video game Pokemon (known as a Pokedex) which the protagonist Ash
 uses to gain information about creatures he spots in the wild.
 
-Hence... Spotidex. 
+Hence... 
+
+![Spotidex logo](docs/screenshots/Brand.png)
 
 ## How To Install This Program
 
@@ -21,7 +18,15 @@ Hence... Spotidex.
 
 Please complete the following steps to install Spotidex:
 
-1. Install Python 3.6 or later. 
+1. Install Python 3.6 or later. Download link [HERE](https://www.python.org/downloads/).
+2. Install Pip 3. This should happen by default when installing Python, however if not please follow [these instructions](https://pip.pypa.io/en/stable/installing/).
+3. Clone or zip the repository to your local machine.
+4. Navigate to the root directory of the project and run the following command:
+```shell script
+python setup.py install
+```
+5. run the command `spotidex` from anywhere in your directory to run Spotidex.
+
 ## How To Use This Program
 
 ### Login Screen
@@ -32,16 +37,24 @@ authorize the program to view certain information from your Spotify account:
 * Your basic profile information
 * Your currently playing information
 
+![The login screen for Spotidex](docs/screenshots/login.png)
+
 
 You'll only have to do this the first time you authorize the app however, as any subsequent launches of the program will bypass this step. Please note though, you will need to reauthorize the app if you log out at any point. 
 
 When you select login, your default browser will open a window where you can login to Spotify. When you do, you should be automatically taken to the main menu. 
 
+![The authorization window for Spotify](docs/screenshots/authentication.png)
+
 > NB: If you close the browser window without cancelling or logging in, you will need to close and reopen the program. This is an issue with a 3rd party module.
 
 ### Session Screen
 
-This is the main screen of the program, where you can get a more in-depth view of the piece you're listening to. The main components are:
+This is the main screen of the program, where you can get a more in-depth view of the piece you're listening to. The program will identify whether the track is a classical music piece and if so will populate the screen with a bunch of interesting information. 
+
+![The main view of Spotidex](docs/screenshots/MainView.png)
+
+The main components of the screen are:
 
 #### Main View:
 
@@ -49,24 +62,27 @@ This will display the track information in a way more suited for classical music
 
 #### Sub-Views:
 
-Clicking on one of the sub-view buttons will provide an extra context about the current track. See [Settings](#settings) below for more information.
+Clicking on one of the sub-view buttons will provide an extra context about the current track:
+
+* **Spotify:** This lets you see the original track, album and artist info which you would normally see if you were using the Spotify app.
+* **Composer:** This will provide the basic information, an ascii art picture, and wikipedia page for the composer of the track that you're listening to.
+* **Work:** The wikipedia page for the work you're listening to.
+* **Recommended:** A list of popular works by the same composer that you might be interested in checking out.
+
+
 
 #### Navigation Controls:
 
 There are several buttons that you can use to navigate Spotidex. Here are their functions:
 
-* **Refresh:** This will query Spotify for the newest track and update any information on the screen if necessary. Spotidex will automatically update the screen every minute automatically as well.
+* **Refresh:** This will query Spotify for the newest track and update any information on the screen if necessary. Spotidex will automatically update the screen every 30 seconds automatically as well.
 * **Static:** This will prevent automatic refreshing of the screen.
 * **Previous/Next:** This will scan forward and back through the track information for songs previously scanned by Spotidex. This will disarm the automatic refresh function of the page as well.
 * **Current:** This will snap Spotidex back to the current song, refresh the screen and re-enable the automatic refresh function.
 
-### Settings
+#### Keyboard Navigation
 
-The settings allow you to customize the session screen, by allowing you to toggle which views you can see when songs are identified by Spotidex. The views available to you are:
-* **Raw Info:** This lets you see the original track, album and artist info which you would normally see if you were using the Spotify app.
-* **Composer:** This will provide the basic information, an ascii art picture, and wikipedia page for the composer of the track that you're listening to.
-* **Work:** The wikipedia page for the work you're listening to.
-* **Recommended:** A list of popular works by the same composer that you might be interested in checking out.
+All the buttons in the main session view can be selected by keyboard shortcuts, designated by the character in the brackets. The mouse events are a little spotty on the Mac OS platform, so I'd highly suggest navigating the program in this way if there are any issues.
 
 
 ## Benchmarks and Criteria
@@ -149,7 +165,7 @@ The `int` value returned by this method can be written to with the `os.write(pip
 
 > Note that you can only run the update method by calling os.write in the background thread, so sometimes it is necessary to print noise just to get an update callback to trigger.
 
-The pipe resource created must also be closed, both at the read and write ends. I encountered crashing when trying to close it down in the process itself, so I solved this by running a background process in `TerminalWrapper` that periodically cleaned up old threads.
+The pipe resource created must also be closed, both at the read and write ends. I encountered crashing when trying to close it down in the process itself, which was due to closing the pipe
 
 I also streamlined the process by exposing a method in the `TerminalWrapper` class, where I could pass a task function (from the view-model) and the update function (from the view) and have the threads be created automatically. Here is that code segment:
 
