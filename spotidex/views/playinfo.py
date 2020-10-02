@@ -3,10 +3,10 @@ from typing import Callable, Any
 import urwid
 
 from spotidex.viewmodels.play_info_vm import PlayInfoVM
-from .scroll import Scrollable
 from .subviews import *
 from . import main_menu
 from .terminal_wrapper import TerminalWrapper
+from . import components
 
 
 class EntryPile(urwid.Pile):
@@ -63,15 +63,15 @@ class PlayInfo:
     
     def __create_button(self, label: str, function: Callable[[urwid.Button], None],
                         key: Optional[str] = None, user_data: Any = None) -> urwid.LineBox:
-        button: urwid.Button = urwid.Button(label.upper(), function, user_data=user_data)
+        button: urwid.Button = components.button(label.upper(), function, user_data)
         
         if key:
-            self.top_container.register_button(button, key)
-        return urwid.LineBox(button)
+            self.top_container.register_button(button.original_widget, key)
+        return button
     
     def __init__header(self):
         
-        back = self.__create_button("Go back", self.go_back, key='b')
+        back = self.__create_button("back", self.go_back, key='b')
         back_padding: urwid.Padding = urwid.Padding(back, align='left', left=2)
         title: urwid.Text = urwid.Text("Spotidex", align='center')
         title_padding = urwid.LineBox(urwid.BoxAdapter(urwid.Filler(title), 3))

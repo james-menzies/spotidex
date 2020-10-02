@@ -16,7 +16,8 @@ class TerminalWrapper:
         ('reversed', 'black', 'white',),
         ('standout', 'dark green,bold', 'black', ),
         ('border', 'light magenta', 'black', ),
-        ('button', 'black', 'light gray', ),
+        ('button', 'white', 'dark magenta', ),
+        ('title', 'light green,bold,underline', 'black')
     ]
     __background = urwid.SolidFill('*')
     __placeholder = urwid.WidgetPlaceholder(urwid.SolidFill())

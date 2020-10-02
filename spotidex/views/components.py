@@ -1,5 +1,6 @@
+from typing import List, Callable, Any
+
 import urwid
-from typing import List, Callable
 
 
 class Choice:
@@ -8,6 +9,23 @@ class Choice:
         self.label = label
         self.callback = callback
         self.description = description
+
+
+class Button:
+    
+    def init(self, label, callback: Callable[[], Any], user_data: Any = None):
+        self.__button = urwid.Button(label, on_press=callback, user_data=user_data)
+        div = urwid.Divider()
+        pile = urwid.Pile([div, self.__button, div], focus_item=self.__button)
+        self.__decorated_button = urwid.AttrMap(pile, 'button', focus_map='reversed')
+    
+    @property
+    def decorated_button(self) -> urwid.AttrMap:
+        return self.__decorated_button
+    
+    @property
+    def button(self) -> urwid.Button:
+        return self.__button
 
 
 class Menu:
@@ -19,8 +37,7 @@ class Menu:
         version = urwid.Text("v 1.0", align='center')
         div = urwid.Divider(top=4)
         self.__body = [txt, version, div]
-
-
+    
     def add_choice_block(self, choices: List[Choice], description: str = "") -> None:
         
         block = []
@@ -29,10 +46,8 @@ class Menu:
             block.append(urwid.Divider())
         
         for choice in choices:
-            button = urwid.Button(choice.label)
-            urwid.connect_signal(button, 'click', choice.callback)
-            button = urwid.AttrMap(urwid.LineBox(button), 'button')
-            block.append(button)
+            block.append(button(choice.label, choice.callback))
+            block.append(urwid.Divider())
         
         pile = urwid.Pile(block)
         

@@ -182,18 +182,17 @@ class WikiSubview(BaseSubView):
         data = self.get_wiki_contents(data)
         
         title = urwid.Text(self.title)
-        div_title = urwid.Divider(div_char='-', top=1, bottom=1)
-        div_paragraph = urwid.Divider()
-        body = [title, div_title]
+        div = urwid.Divider()
+        body = [title, div]
         
         for item in data:
             
             if item["type"] == 'heading':
-                text = urwid.Text(item["content"])
-                body += [div_title, text, div_title]
+                text = urwid.Text(("title", item["content"]), align="center")
+                body += [text, div]
             else:
                 text = urwid.Text(item["content"])
-                body += [text, div_paragraph]
+                body += [text, div]
         
         pile = urwid.Pile(body)
         self.__widget = Scrollable(pile)
