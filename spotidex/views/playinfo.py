@@ -42,7 +42,7 @@ class PlayInfo:
         self.__add_subview_frame(self.main_view_frame, 10, "Track Information")
         self.__add_to_top_container(div)
         
-        self.__init__subview_selection()
+        self.subview_selection = self.__init__subview_selection()
         self.__add_to_top_container(div)
         
         self.sub_view_frame: urwid.Frame = urwid.Frame(self.sub_views[0].widget)
@@ -76,8 +76,6 @@ class PlayInfo:
         
         back = self.__create_button("back", self.go_back, key='b')
         back_padding: urwid.Padding = urwid.Padding(back, align='left', left=2)
-        # title: urwid.Text = urwid.Text("Spotidex", align='center')
-        # title_padding = urwid.LineBox(urwid.BoxAdapter(urwid.Filler(title), 3))
 
         font = urwid.font.HalfBlock5x4Font()
         title = urwid.BigText("Spotidex", font)
@@ -88,15 +86,17 @@ class PlayInfo:
         ], dividechars=1)
         self.__add_to_top_container(header_widget)
     
-    def __init__subview_selection(self) -> None:
+    def __init__subview_selection(self) -> urwid.GridFlow:
         buttons = []
         for index, view in enumerate(self.sub_views):
-            buttons.append(self.__create_button(view.title, self.__change_sub_view, user_data=index))
+            buttons.append(self.__create_button(view.title, self.__change_sub_view,
+                                                key=str(index + 1), user_data=index))
         walker = urwid.SimpleFocusListWalker(buttons)
         
-        grid_flow = urwid.GridFlow(walker, cell_width=15, h_sep=1, v_sep=1, align='center')
+        grid_flow = urwid.GridFlow(walker, cell_width=20, h_sep=1, v_sep=1, align='center')
         self.__add_to_top_container(grid_flow)
         self.top_container.focus_item = grid_flow
+        return grid_flow
     
     def __init__button_bar(self) -> None:
         
@@ -110,6 +110,8 @@ class PlayInfo:
     def __change_sub_view(self, button: urwid.Button, index: int) -> None:
         self.sub_view_frame.contents['body'] = (self.sub_views[index].widget, None)
         self.current_sub_view = index
+        self.top_container.focus_item = self.subview_selection
+        self.subview_selection.focus_position = index
     
     def __update_views(self, data) -> None:
         """
