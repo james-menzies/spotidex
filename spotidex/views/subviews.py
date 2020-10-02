@@ -88,9 +88,9 @@ class ClassicalInfoSubView(BaseSubView):
     
     def update_widget(self, data: Optional[dict] = None) -> urwid.Widget:
         
-        data = self._get_data_section(data, "classical_info", ["work", "composer"])
-        if not data:
-            self.__widget = self.placeholder
+        retrieved_data = self._get_data_section(data, "classical_info", ["work", "composer"])
+        if not retrieved_data:
+            self.__widget = RawInfoSubView().update_widget(data)
             return self.__widget
         
         column1 = []
