@@ -1,6 +1,6 @@
 import os
 from typing import Protocol, Callable, Any, List, Tuple, Optional
-from threading import Thread, RLock
+from threading import Thread
 import urwid
 
 
@@ -19,7 +19,7 @@ class TerminalWrapper:
         ('title', 'light gray,bold,underline', 'black'),
         ('standout', 'light gray,bold', 'black')
     ]
-    __background = urwid.SolidFill('*')
+    __background = urwid.SolidFill(u'\u239A')
     __placeholder = urwid.WidgetPlaceholder(urwid.SolidFill())
     __status = urwid.Text(" ", align='left')
     __footer = urwid.Text(" ", align='center')

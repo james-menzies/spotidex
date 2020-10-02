@@ -34,7 +34,7 @@ class Menu:
         font = urwid.font.HalfBlock5x4Font()
         txt = urwid.BigText("Spotidex", font)
         txt = urwid.Padding(txt, "center", width="clip")
-        version = urwid.Text("v 1.0", align='center')
+        version = urwid.Text(("border", "v 1.0"), align='center')
         div = urwid.Divider(top=4)
         self.__body = [txt, version, div]
     
