@@ -35,7 +35,7 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: 34.203.1.173
-          username: github-actions
+          username: github
           key: ${{ secrets.AMAZON_DEPLOYMENT }}
           script: |
             rm -rf spotidex
