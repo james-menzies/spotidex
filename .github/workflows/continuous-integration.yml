@@ -28,7 +28,7 @@ jobs:
         run: |
           python -m unittest discover test/automated
   deployment:
-    needs: testing_suite
+    needs: testing-suite
     runs-on: ubuntu-latest
     steps:
       - name: Fresh clone & repo install
