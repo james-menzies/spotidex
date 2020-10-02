@@ -42,4 +42,5 @@ jobs:
             git clone https://github.com/redbrickhut/spotidex
             python3.8 -m venv /home/github/spotidex/venv
             source /home/github/spotidex/venv/bin/activate
-            python /home/github/spotidex/setup.py install
+            cd /home/github/spotidex/
+            python setup.py install
