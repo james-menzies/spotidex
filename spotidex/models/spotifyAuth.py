@@ -1,5 +1,6 @@
 import json
 import os
+from pathlib import Path
 from typing import Callable
 
 from spotipy import Spotify
@@ -10,7 +11,11 @@ from .spotifyTrack import SpotifyTrack
 
 class SpotifyAuth:
     __instance = None
-    __cache_path = ".cache"
+    __cache_dir = Path(Path.home(), ".spotidex")
+    if not __cache_dir.exists():
+        __cache_dir.mkdir(parents=True, exist_ok=True)
+    
+    __cache_path = str(Path(__cache_dir, ".cache"))
     
     @staticmethod
     def get_instance():
